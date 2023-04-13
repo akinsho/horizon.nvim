@@ -1,9 +1,24 @@
 local c = require('horizon.palette')
 
+---@class horizon.Opts
+---@field fg string
+---@field bg string
+---@field sp string
+---@field bold boolean
+---@field italic boolean
+---@field underline boolean
+---@field undercurl boolean
+---@field reverse boolean
+---@field standout boolean
+---@field link string
+
+---@alias horizon.HighlightDef {[string]: horizon.Opts}[]
+
 local api = vim.api
 
 local M = {}
 
+---@type horizon.HighlightDef
 local highlights = {
   -- Editor
   { ['Normal'] = { fg = c.fg, bg = c.bg } },
@@ -107,6 +122,7 @@ local highlights = {
   { ['Special'] = { fg = c.orange, bg = 'NONE' } },
 
   -- Treesitter
+  ---@deprecated
   { ['TSComment'] = { link = 'Comment' } },
   { ['TSVariable'] = { link = 'Variable' } },
   { ['TSString'] = { link = 'String' } },
@@ -176,6 +192,7 @@ local highlights = {
   { ['TSURI'] = { fg = c.cyan, bg = 'NONE', underline = true } },
   { ['TSMath'] = { fg = c.yellow, bg = 'NONE' } },
   { ['TSLiteral'] = { fg = c.orange, bg = 'NONE' } },
+  ---
   { ['@comment'] = { link = 'Comment' } },
   { ['@variable'] = { link = 'Variable' } },
   { ['@string'] = { link = 'String' } },
@@ -266,21 +283,6 @@ local highlights = {
   { ['@lsp.typemod.variable.defaultLibrary'] = { link = '@variable.builtin' } },
   { ['@lsp.mod.deprecated'] = { fg = 'NONE', bg = 'NONE', strikethrough = true } },
 
-  -- Whichkey
-  { ['WhichKey'] = { fg = c.purple, bg = 'NONE' } },
-  { ['WhichKeySeperator'] = { fg = c.yellow, bg = 'NONE' } },
-  { ['WhichKeyGroup'] = { fg = c.red, bg = 'NONE' } },
-  { ['WhichKeyDesc'] = { fg = c.fg, bg = 'NONE' } },
-  { ['WhichKeyFloat'] = { fg = 'NONE', bg = c.alt_bg } },
-
-  -- Git
-  { ['SignAdd'] = { fg = c.sign_add, bg = 'NONE' } },
-  { ['SignChange'] = { fg = c.sign_change, bg = 'NONE' } },
-  { ['SignDelete'] = { fg = c.sign_delete, bg = 'NONE' } },
-  { ['GitSignsAdd'] = { fg = c.sign_add, bg = 'NONE' } },
-  { ['GitSignsChange'] = { fg = c.sign_change, bg = 'NONE' } },
-  { ['GitSignsDelete'] = { fg = c.sign_delete, bg = 'NONE' } },
-
   -- LSP
   { ['DiagnosticHint'] = { fg = c.hint, bg = 'NONE' } },
   { ['DiagnosticInfo'] = { fg = c.info, bg = 'NONE' } },
@@ -347,202 +349,245 @@ local highlights = {
   { ['LspCodeLens'] = { fg = c.context, bg = 'NONE', italic = true } },
   { ['LspCodeLensSeparator'] = { fg = c.context, bg = 'NONE', italic = true } },
 
-  -- Quickscope
-  { ['QuickScopePrimary'] = { fg = '#ff007c', bg = 'NONE', underline = true } },
-  { ['QuickScopeSecondary'] = { fg = '#00dfff', bg = 'NONE', underline = true } },
-
-  -- Telescope
-  { ['TelescopeSelection'] = { fg = 'NONE', bg = c.ui2_blue } },
-  { ['TelescopeSelectionCaret'] = { fg = c.red, bg = c.ui2_blue } },
-  { ['TelescopeMatching'] = { fg = c.yellow, bg = 'NONE', bold = true, italic = true } },
-  { ['TelescopeBorder'] = { fg = c.alt_fg, bg = 'NONE' } },
-  { ['TelescopeNormal'] = { fg = c.light_gray, bg = c.alt_bg } },
-  { ['TelescopePromptTitle'] = { fg = c.orange, bg = 'NONE' } },
-  { ['TelescopePromptPrefix'] = { fg = c.cyan, bg = 'NONE' } },
-  { ['TelescopeResultsTitle'] = { fg = c.orange, bg = 'NONE' } },
-  { ['TelescopePreviewTitle'] = { fg = c.orange, bg = 'NONE' } },
-  { ['TelescopePromptCounter'] = { fg = c.red, bg = 'NONE' } },
-  { ['TelescopePreviewHyphen'] = { fg = c.red, bg = 'NONE' } },
-
-  -- NvimTree
-  { ['NvimTreeFolderIcon'] = { fg = c.fg, bg = 'NONE' } },
-  { ['NvimTreeIndentMarker'] = { fg = c.light_gray, bg = 'NONE' } },
-  { ['NvimTreeNormal'] = { fg = c.fg, bg = c.alt_bg } },
-  { ['NvimTreeVertSplit'] = { fg = c.alt_bg, bg = c.alt_bg } },
-  { ['NvimTreeFolderName'] = { fg = c.fg, bg = 'NONE' } },
-  { ['NvimTreeOpenedFolderName'] = { fg = c.fg, bg = 'NONE', bold = true, italic = true } },
-  { ['NvimTreeEmptyFolderName'] = { fg = c.gray, bg = 'NONE', italic = true } },
-  { ['NvimTreeGitIgnored'] = { fg = c.gray, bg = 'NONE', italic = true } },
-  { ['NvimTreeImageFile'] = { fg = c.light_gray, bg = 'NONE' } },
-  { ['NvimTreeSpecialFile'] = { fg = c.orange, bg = 'NONE' } },
-  { ['NvimTreeEndOfBuffer'] = { fg = c.alt_bg, bg = 'NONE' } },
-  { ['NvimTreeCursorLine'] = { fg = 'NONE', bg = c.dark_gray } },
-  { ['NvimTreeGitStaged'] = { fg = c.sign_add_alt, bg = 'NONE' } },
-  { ['NvimTreeGitNew'] = { fg = c.sign_add_alt, bg = 'NONE' } },
-  { ['NvimTreeGitRenamed'] = { fg = c.sign_add_alt, bg = 'NONE' } },
-  { ['NvimTreeGitDeleted'] = { fg = c.sign_delete, bg = 'NONE' } },
-  { ['NvimTreeGitMerge'] = { fg = c.sign_change_alt, bg = 'NONE' } },
-  { ['NvimTreeGitDirty'] = { fg = c.sign_change_alt, bg = 'NONE' } },
-  { ['NvimTreeSymlink'] = { fg = c.cyan, bg = 'NONE' } },
-  { ['NvimTreeRootFolder'] = { fg = c.fg, bg = 'NONE', bold = true } },
-  { ['NvimTreeExecFile'] = { fg = '#9FBA89', bg = 'NONE' } },
-
-  -- NeoTree
-  { ['NeoTreeFolderIcon'] = { fg = c.fg, bg = 'NONE' } },
-  { ['NeoTreeIndentMarker'] = { fg = c.gray, bg = 'NONE' } },
-  { ['NeoTreeNormal'] = { fg = c.fg, bg = c.alt_bg } },
-  { ['NeoTreeVertSplit'] = { fg = c.alt_bg, bg = c.alt_bg } },
-  { ['NeoTreeWinSeparator'] = { fg = c.alt_bg, bg = c.alt_bg } },
-  { ['NeoTreeDirectoryName'] = { fg = c.fg, bg = 'NONE' } },
-  { ['NeoTreeDirectoryIcon'] = { fg = c.fg, bg = 'NONE' } },
-  { ['NeoTreeFileName'] = { fg = c.light_gray, bg = 'NONE' } },
-  { ['NeoTreeOpenedFolderName'] = { fg = c.fg, bg = 'NONE', bold = true, italic = true } },
-  { ['NeoTreeEmptyFolderName'] = { fg = c.gray, bg = 'NONE', italic = true } },
-  { ['NeoTreeGitIgnored'] = { fg = c.gray, bg = 'NONE', italic = true } },
-  { ['NeoTreeDotfile'] = { fg = c.gray, bg = 'NONE', italic = true } },
-  { ['NeoTreeHiddenByName'] = { fg = c.gray, bg = 'NONE', italic = true } },
-  { ['NeoTreeEndOfBuffer'] = { fg = c.alt_bg, bg = 'NONE' } },
-  { ['NeoTreeCursorLine'] = { fg = 'NONE', bg = c.dark_gray } },
-  { ['NeoTreeGitStaged'] = { fg = c.sign_add_alt, bg = 'NONE' } },
-  { ['NeoTreeGitUntracked'] = { fg = c.sign_add_alt, bg = 'NONE' } },
-  { ['NeoTreeGitDeleted'] = { fg = c.sign_delete, bg = 'NONE' } },
-  { ['NeoTreeGitModified'] = { fg = c.sign_change_alt, bg = 'NONE' } },
-  { ['NeoTreeSymbolicLinkTarget'] = { fg = c.cyan, bg = 'NONE' } },
-  { ['NeoTreeRootName'] = { fg = c.fg, bg = 'NONE', bold = true } },
-  { ['NeoTreeTitleBar'] = { fg = c.dark_gray, bg = c.fg, bold = true } },
-
-  -- Buffer
-  { ['BufferCurrent'] = { fg = c.fg, bg = c.bg } },
-  { ['BufferCurrentIndex'] = { fg = c.fg, bg = c.bg } },
-  { ['BufferCurrentMod'] = { fg = c.info, bg = c.bg } },
-  { ['BufferCurrentSign'] = { fg = c.hint, bg = c.bg } },
-  { ['BufferCurrentTarget'] = { fg = c.red, bg = c.bg, bold = true } },
-  { ['BufferVisible'] = { fg = c.fg, bg = c.bg } },
-  { ['BufferVisibleIndex'] = { fg = c.fg, bg = c.bg } },
-  { ['BufferVisibleMod'] = { fg = c.info, bg = c.bg } },
-  { ['BufferVisibleSign'] = { fg = c.gray, bg = c.bg } },
-  { ['BufferVisibleTarget'] = { fg = c.red, bg = c.bg, bold = true } },
-  { ['BufferInactive'] = { fg = c.gray, bg = c.alt_bg } },
-  { ['BufferInactiveIndex'] = { fg = c.gray, bg = c.alt_bg } },
-  { ['BufferInactiveMod'] = { fg = c.info, bg = c.alt_bg } },
-  { ['BufferInactiveSign'] = { fg = c.gray, bg = c.alt_bg } },
-  { ['BufferInactiveTarget'] = { fg = c.red, bg = c.alt_bg, bold = true } },
-
   -- StatusLine
   { ['StatusLine'] = { fg = c.context, bg = c.bg } },
   { ['StatusLineNC'] = { fg = c.line, bg = c.bg } },
   { ['StatusLineSeparator'] = { fg = c.line, bg = 'NONE' } },
   { ['StatusLineTerm'] = { fg = c.line, bg = 'NONE' } },
   { ['StatusLineTermNC'] = { fg = c.line, bg = 'NONE' } },
-
-  -- IndentBlankline
-  { ['IndentBlanklineContextChar'] = { fg = c.context, bg = 'NONE' } },
-  { ['IndentBlanklineContextStart'] = { fg = 'NONE', bg = 'NONE', underline = true } },
-  { ['IndentBlanklineChar'] = { fg = c.gray, bg = 'NONE' } },
-
-  -- Cmp
-  { ['CmpItemAbbrDeprecated'] = { fg = c.gray, bg = 'NONE', strikethrough = true } },
-  { ['CmpItemAbbrMatch'] = { fg = c.ui3_blue, bg = 'NONE' } },
-  { ['CmpItemAbbrMatchFuzzy'] = { fg = c.ui3_blue, bg = 'NONE' } },
-  { ['CmpItemKindFunction'] = { fg = c.cyan, bg = 'NONE' } },
-  { ['CmpItemKindMethod'] = { fg = c.cyan, bg = 'NONE' } },
-  { ['CmpItemKindConstructor'] = { fg = c.yellow, bg = 'NONE' } },
-  { ['CmpItemKindClass'] = { fg = c.yellow, bg = 'NONE' } },
-  { ['CmpItemKindEnum'] = { fg = c.yellow, bg = 'NONE' } },
-  { ['CmpItemKindEvent'] = { fg = c.red, bg = 'NONE' } },
-  { ['CmpItemKindInterface'] = { fg = c.yellow, bg = 'NONE' } },
-  { ['CmpItemKindStruct'] = { fg = c.yellow, bg = 'NONE' } },
-  { ['CmpItemKindVariable'] = { fg = c.red, bg = 'NONE' } },
-  { ['CmpItemKindField'] = { fg = c.red, bg = 'NONE' } },
-  { ['CmpItemKindProperty'] = { fg = c.red, bg = 'NONE' } },
-  { ['CmpItemKindEnumMember'] = { fg = c.orange, bg = 'NONE' } },
-  { ['CmpItemKindConstant'] = { fg = c.orange, bg = 'NONE' } },
-  { ['CmpItemKindKeyword'] = { fg = c.purple, bg = 'NONE' } },
-  { ['CmpItemKindModule'] = { fg = c.yelloworange, bg = 'NONE' } },
-  { ['CmpItemKindValue'] = { fg = c.fg, bg = 'NONE' } },
-  { ['CmpItemKindUnit'] = { fg = c.fg, bg = 'NONE' } },
-  { ['CmpItemKindText'] = { fg = c.fg, bg = 'NONE' } },
-  { ['CmpItemKindSnippet'] = { fg = c.purple, bg = 'NONE' } },
-  { ['CmpItemKindFile'] = { fg = c.fg, bg = 'NONE' } },
-  { ['CmpItemKindFolder'] = { fg = c.fg, bg = 'NONE' } },
-  { ['CmpItemKindColor'] = { fg = c.fg, bg = 'NONE' } },
-  { ['CmpItemKindReference'] = { fg = c.fg, bg = 'NONE' } },
-  { ['CmpItemKindOperator'] = { fg = c.fg, bg = 'NONE' } },
-  { ['CmpItemKindTypeParameter'] = { fg = c.red, bg = 'NONE' } },
-
-  -- Navic
-  { ['NavicIconsFile'] = { fg = c.fg, bg = 'NONE' } },
-  { ['NavicIconsModule'] = { fg = c.yelloworange, bg = 'NONE' } },
-  { ['NavicIconsNamespace'] = { fg = c.fg, bg = 'NONE' } },
-  { ['NavicIconsPackage'] = { fg = c.fg, bg = 'NONE' } },
-  { ['NavicIconsClass'] = { fg = c.yellow, bg = 'NONE' } },
-  { ['NavicIconsMethod'] = { fg = c.cyan, bg = 'NONE' } },
-  { ['NavicIconsProperty'] = { fg = c.red, bg = 'NONE' } },
-  { ['NavicIconsField'] = { fg = c.red, bg = 'NONE' } },
-  { ['NavicIconsConstructor'] = { fg = c.yellow, bg = 'NONE' } },
-  { ['NavicIconsEnum'] = { fg = c.orange, bg = 'NONE' } },
-  { ['NavicIconsInterface'] = { fg = c.yellow, bg = 'NONE' } },
-  { ['NavicIconsFunction'] = { fg = c.cyan, bg = 'NONE' } },
-  { ['NavicIconsVariable'] = { fg = c.red, bg = 'NONE' } },
-  { ['NavicIconsConstant'] = { fg = c.orange, bg = 'NONE' } },
-  { ['NavicIconsString'] = { fg = c.yelloworange, bg = 'NONE' } },
-  { ['NavicIconsNumber'] = { fg = c.orange, bg = 'NONE' } },
-  { ['NavicIconsBoolean'] = { fg = c.orange, bg = 'NONE' } },
-  { ['NavicIconsArray'] = { fg = c.yellow, bg = 'NONE' } },
-  { ['NavicIconsObject'] = { fg = c.yellow, bg = 'NONE' } },
-  { ['NavicIconsKey'] = { fg = c.purple, bg = 'NONE' } },
-  { ['NavicIconsKeyword'] = { fg = c.purple, bg = 'NONE' } },
-  { ['NavicIconsNull'] = { fg = c.orange, bg = 'NONE' } },
-  { ['NavicIconsEnumMember'] = { fg = c.orange, bg = 'NONE' } },
-  { ['NavicIconsStruct'] = { fg = c.cyan, bg = 'NONE' } },
-  { ['NavicIconsEvent'] = { fg = c.yellow, bg = 'NONE' } },
-  { ['NavicIconsOperator'] = { fg = c.fg, bg = 'NONE' } },
-  { ['NavicIconsTypeParameter'] = { fg = c.red, bg = 'NONE' } },
-  { ['NavicText'] = { fg = c.fg, bg = 'NONE' } },
-  { ['NavicSeparator'] = { fg = c.fg, bg = 'NONE' } },
-
-  -- Packer
-  { ['packerString'] = { fg = c.ui_orange, bg = 'NONE' } },
-  { ['packerHash'] = { fg = c.ui4_blue, bg = 'NONE' } },
-  { ['packerOutput'] = { fg = c.ui_purple, bg = 'NONE' } },
-  { ['packerRelDate'] = { fg = c.gray, bg = 'NONE' } },
-  { ['packerSuccess'] = { fg = c.success_green, bg = 'NONE' } },
-  { ['packerStatusSuccess'] = { fg = c.ui4_blue, bg = 'NONE' } },
-
-  -- SymbolOutline
-  { ['SymbolsOutlineConnector'] = { fg = c.gray, bg = 'NONE' } },
-  { ['FocusedSymbol'] = { fg = 'NONE', bg = '#36383F' } },
-
-  -- Notify
-  { ['NotifyERRORBorder'] = { fg = '#8A1F1F', bg = 'NONE' } },
-  { ['NotifyWARNBorder'] = { fg = '#79491D', bg = 'NONE' } },
-  { ['NotifyINFOBorder'] = { fg = c.ui_blue, bg = 'NONE' } },
-  { ['NotifyDEBUGBorder'] = { fg = c.gray, bg = 'NONE' } },
-  { ['NotifyTRACEBorder'] = { fg = '#4F3552', bg = 'NONE' } },
-  { ['NotifyERRORIcon'] = { fg = c.error, bg = 'NONE' } },
-  { ['NotifyWARNIcon'] = { fg = c.warn, bg = 'NONE' } },
-  { ['NotifyINFOIcon'] = { fg = c.ui4_blue, bg = 'NONE' } },
-  { ['NotifyDEBUGIcon'] = { fg = c.gray, bg = 'NONE' } },
-  { ['NotifyTRACEIcon'] = { fg = c.ui_purple, bg = 'NONE' } },
-  { ['NotifyERRORTitle'] = { fg = c.error, bg = 'NONE' } },
-  { ['NotifyWARNTitle'] = { fg = c.warn, bg = 'NONE' } },
-  { ['NotifyINFOTitle'] = { fg = c.ui4_blue, bg = 'NONE' } },
-  { ['NotifyDEBUGTitle'] = { fg = c.gray, bg = 'NONE' } },
-  { ['NotifyTRACETitle'] = { fg = c.ui_purple, bg = 'NONE' } },
-
-  -- Hop
-  { ['HopNextKey'] = { fg = '#4ae0ff', bg = 'NONE' } },
-  { ['HopNextKey1'] = { fg = '#d44eed', bg = 'NONE' } },
-  { ['HopNextKey2'] = { fg = '#b42ecd', bg = 'NONE' } },
-  { ['HopUnmatched'] = { fg = c.gray, bg = 'NONE' } },
-  { ['HopPreview'] = { fg = '#c7ba7d', bg = 'NONE' } },
-
-  -- Crates
-  { ['CratesNvimLoading'] = { fg = c.hint, bg = 'NONE' } },
-  { ['CratesNvimVersion'] = { fg = c.hint, bg = 'NONE' } },
 }
 
-function M.set_highlights()
+local plugins = {
+
+  whichkey = {
+    { ['WhichKey'] = { fg = c.purple, bg = 'NONE' } },
+    { ['WhichKeySeperator'] = { fg = c.yellow, bg = 'NONE' } },
+    { ['WhichKeyGroup'] = { fg = c.red, bg = 'NONE' } },
+    { ['WhichKeyDesc'] = { fg = c.fg, bg = 'NONE' } },
+    { ['WhichKeyFloat'] = { fg = 'NONE', bg = c.alt_bg } },
+  },
+
+  gitsigns = {
+    { ['SignAdd'] = { fg = c.sign_add, bg = 'NONE' } },
+    { ['SignChange'] = { fg = c.sign_change, bg = 'NONE' } },
+    { ['SignDelete'] = { fg = c.sign_delete, bg = 'NONE' } },
+    { ['GitSignsAdd'] = { fg = c.sign_add, bg = 'NONE' } },
+    { ['GitSignsChange'] = { fg = c.sign_change, bg = 'NONE' } },
+    { ['GitSignsDelete'] = { fg = c.sign_delete, bg = 'NONE' } },
+  },
+
+  quickscope = {
+    { ['QuickScopePrimary'] = { fg = '#ff007c', bg = 'NONE', underline = true } },
+    { ['QuickScopeSecondary'] = { fg = '#00dfff', bg = 'NONE', underline = true } },
+  },
+
+  telescope = {
+    { ['TelescopeSelection'] = { fg = 'NONE', bg = c.ui2_blue } },
+    { ['TelescopeSelectionCaret'] = { fg = c.red, bg = c.ui2_blue } },
+    { ['TelescopeMatching'] = { fg = c.yellow, bg = 'NONE', bold = true, italic = true } },
+    { ['TelescopeBorder'] = { fg = c.alt_fg, bg = 'NONE' } },
+    { ['TelescopeNormal'] = { fg = c.light_gray, bg = c.alt_bg } },
+    { ['TelescopePromptTitle'] = { fg = c.orange, bg = 'NONE' } },
+    { ['TelescopePromptPrefix'] = { fg = c.cyan, bg = 'NONE' } },
+    { ['TelescopeResultsTitle'] = { fg = c.orange, bg = 'NONE' } },
+    { ['TelescopePreviewTitle'] = { fg = c.orange, bg = 'NONE' } },
+    { ['TelescopePromptCounter'] = { fg = c.red, bg = 'NONE' } },
+    { ['TelescopePreviewHyphen'] = { fg = c.red, bg = 'NONE' } },
+  },
+
+  nvim_tree = {
+    { ['NvimTreeFolderIcon'] = { fg = c.fg, bg = 'NONE' } },
+    { ['NvimTreeIndentMarker'] = { fg = c.light_gray, bg = 'NONE' } },
+    { ['NvimTreeNormal'] = { fg = c.fg, bg = c.alt_bg } },
+    { ['NvimTreeVertSplit'] = { fg = c.alt_bg, bg = c.alt_bg } },
+    { ['NvimTreeFolderName'] = { fg = c.fg, bg = 'NONE' } },
+    { ['NvimTreeOpenedFolderName'] = { fg = c.fg, bg = 'NONE', bold = true, italic = true } },
+    { ['NvimTreeEmptyFolderName'] = { fg = c.gray, bg = 'NONE', italic = true } },
+    { ['NvimTreeGitIgnored'] = { fg = c.gray, bg = 'NONE', italic = true } },
+    { ['NvimTreeImageFile'] = { fg = c.light_gray, bg = 'NONE' } },
+    { ['NvimTreeSpecialFile'] = { fg = c.orange, bg = 'NONE' } },
+    { ['NvimTreeEndOfBuffer'] = { fg = c.alt_bg, bg = 'NONE' } },
+    { ['NvimTreeCursorLine'] = { fg = 'NONE', bg = c.dark_gray } },
+    { ['NvimTreeGitStaged'] = { fg = c.sign_add_alt, bg = 'NONE' } },
+    { ['NvimTreeGitNew'] = { fg = c.sign_add_alt, bg = 'NONE' } },
+    { ['NvimTreeGitRenamed'] = { fg = c.sign_add_alt, bg = 'NONE' } },
+    { ['NvimTreeGitDeleted'] = { fg = c.sign_delete, bg = 'NONE' } },
+    { ['NvimTreeGitMerge'] = { fg = c.sign_change_alt, bg = 'NONE' } },
+    { ['NvimTreeGitDirty'] = { fg = c.sign_change_alt, bg = 'NONE' } },
+    { ['NvimTreeSymlink'] = { fg = c.cyan, bg = 'NONE' } },
+    { ['NvimTreeRootFolder'] = { fg = c.fg, bg = 'NONE', bold = true } },
+    { ['NvimTreeExecFile'] = { fg = '#9FBA89', bg = 'NONE' } },
+  },
+
+  neo_tree = {
+    { ['NeoTreeFolderIcon'] = { fg = c.fg, bg = 'NONE' } },
+    { ['NeoTreeIndentMarker'] = { fg = c.gray, bg = 'NONE' } },
+    { ['NeoTreeNormal'] = { fg = c.fg, bg = c.alt_bg } },
+    { ['NeoTreeVertSplit'] = { fg = c.alt_bg, bg = c.alt_bg } },
+    { ['NeoTreeWinSeparator'] = { fg = c.alt_bg, bg = c.alt_bg } },
+    { ['NeoTreeDirectoryName'] = { fg = c.fg, bg = 'NONE' } },
+    { ['NeoTreeDirectoryIcon'] = { fg = c.fg, bg = 'NONE' } },
+    { ['NeoTreeFileName'] = { fg = c.light_gray, bg = 'NONE' } },
+    { ['NeoTreeOpenedFolderName'] = { fg = c.fg, bg = 'NONE', bold = true, italic = true } },
+    { ['NeoTreeEmptyFolderName'] = { fg = c.gray, bg = 'NONE', italic = true } },
+    { ['NeoTreeGitIgnored'] = { fg = c.gray, bg = 'NONE', italic = true } },
+    { ['NeoTreeDotfile'] = { fg = c.gray, bg = 'NONE', italic = true } },
+    { ['NeoTreeHiddenByName'] = { fg = c.gray, bg = 'NONE', italic = true } },
+    { ['NeoTreeEndOfBuffer'] = { fg = c.alt_bg, bg = 'NONE' } },
+    { ['NeoTreeCursorLine'] = { fg = 'NONE', bg = c.dark_gray } },
+    { ['NeoTreeGitStaged'] = { fg = c.sign_add_alt, bg = 'NONE' } },
+    { ['NeoTreeGitUntracked'] = { fg = c.sign_add_alt, bg = 'NONE' } },
+    { ['NeoTreeGitDeleted'] = { fg = c.sign_delete, bg = 'NONE' } },
+    { ['NeoTreeGitModified'] = { fg = c.sign_change_alt, bg = 'NONE' } },
+    { ['NeoTreeSymbolicLinkTarget'] = { fg = c.cyan, bg = 'NONE' } },
+    { ['NeoTreeRootName'] = { fg = c.fg, bg = 'NONE', bold = true } },
+    { ['NeoTreeTitleBar'] = { fg = c.dark_gray, bg = c.fg, bold = true } },
+  },
+  barbar = {
+    { ['BufferCurrent'] = { fg = c.fg, bg = c.bg } },
+    { ['BufferCurrentIndex'] = { fg = c.fg, bg = c.bg } },
+    { ['BufferCurrentMod'] = { fg = c.info, bg = c.bg } },
+    { ['BufferCurrentSign'] = { fg = c.hint, bg = c.bg } },
+    { ['BufferCurrentTarget'] = { fg = c.red, bg = c.bg, bold = true } },
+    { ['BufferVisible'] = { fg = c.fg, bg = c.bg } },
+    { ['BufferVisibleIndex'] = { fg = c.fg, bg = c.bg } },
+    { ['BufferVisibleMod'] = { fg = c.info, bg = c.bg } },
+    { ['BufferVisibleSign'] = { fg = c.gray, bg = c.bg } },
+    { ['BufferVisibleTarget'] = { fg = c.red, bg = c.bg, bold = true } },
+    { ['BufferInactive'] = { fg = c.gray, bg = c.alt_bg } },
+    { ['BufferInactiveIndex'] = { fg = c.gray, bg = c.alt_bg } },
+    { ['BufferInactiveMod'] = { fg = c.info, bg = c.alt_bg } },
+    { ['BufferInactiveSign'] = { fg = c.gray, bg = c.alt_bg } },
+    { ['BufferInactiveTarget'] = { fg = c.red, bg = c.alt_bg, bold = true } },
+  },
+
+  indent_blankline = {
+    { ['IndentBlanklineContextChar'] = { fg = c.context, bg = 'NONE' } },
+    { ['IndentBlanklineContextStart'] = { fg = 'NONE', bg = 'NONE', underline = true } },
+    { ['IndentBlanklineChar'] = { fg = c.gray, bg = 'NONE' } },
+  },
+
+  cmp = {
+    { ['CmpItemAbbrDeprecated'] = { fg = c.gray, bg = 'NONE', strikethrough = true } },
+    { ['CmpItemAbbrMatch'] = { fg = c.ui3_blue, bg = 'NONE' } },
+    { ['CmpItemAbbrMatchFuzzy'] = { fg = c.ui3_blue, bg = 'NONE' } },
+    { ['CmpItemKindFunction'] = { fg = c.cyan, bg = 'NONE' } },
+    { ['CmpItemKindMethod'] = { fg = c.cyan, bg = 'NONE' } },
+    { ['CmpItemKindConstructor'] = { fg = c.yellow, bg = 'NONE' } },
+    { ['CmpItemKindClass'] = { fg = c.yellow, bg = 'NONE' } },
+    { ['CmpItemKindEnum'] = { fg = c.yellow, bg = 'NONE' } },
+    { ['CmpItemKindEvent'] = { fg = c.red, bg = 'NONE' } },
+    { ['CmpItemKindInterface'] = { fg = c.yellow, bg = 'NONE' } },
+    { ['CmpItemKindStruct'] = { fg = c.yellow, bg = 'NONE' } },
+    { ['CmpItemKindVariable'] = { fg = c.red, bg = 'NONE' } },
+    { ['CmpItemKindField'] = { fg = c.red, bg = 'NONE' } },
+    { ['CmpItemKindProperty'] = { fg = c.red, bg = 'NONE' } },
+    { ['CmpItemKindEnumMember'] = { fg = c.orange, bg = 'NONE' } },
+    { ['CmpItemKindConstant'] = { fg = c.orange, bg = 'NONE' } },
+    { ['CmpItemKindKeyword'] = { fg = c.purple, bg = 'NONE' } },
+    { ['CmpItemKindModule'] = { fg = c.yelloworange, bg = 'NONE' } },
+    { ['CmpItemKindValue'] = { fg = c.fg, bg = 'NONE' } },
+    { ['CmpItemKindUnit'] = { fg = c.fg, bg = 'NONE' } },
+    { ['CmpItemKindText'] = { fg = c.fg, bg = 'NONE' } },
+    { ['CmpItemKindSnippet'] = { fg = c.purple, bg = 'NONE' } },
+    { ['CmpItemKindFile'] = { fg = c.fg, bg = 'NONE' } },
+    { ['CmpItemKindFolder'] = { fg = c.fg, bg = 'NONE' } },
+    { ['CmpItemKindColor'] = { fg = c.fg, bg = 'NONE' } },
+    { ['CmpItemKindReference'] = { fg = c.fg, bg = 'NONE' } },
+    { ['CmpItemKindOperator'] = { fg = c.fg, bg = 'NONE' } },
+    { ['CmpItemKindTypeParameter'] = { fg = c.red, bg = 'NONE' } },
+  },
+
+  navic = {
+    { ['NavicIconsFile'] = { fg = c.fg, bg = 'NONE' } },
+    { ['NavicIconsModule'] = { fg = c.yelloworange, bg = 'NONE' } },
+    { ['NavicIconsNamespace'] = { fg = c.fg, bg = 'NONE' } },
+    { ['NavicIconsPackage'] = { fg = c.fg, bg = 'NONE' } },
+    { ['NavicIconsClass'] = { fg = c.yellow, bg = 'NONE' } },
+    { ['NavicIconsMethod'] = { fg = c.cyan, bg = 'NONE' } },
+    { ['NavicIconsProperty'] = { fg = c.red, bg = 'NONE' } },
+    { ['NavicIconsField'] = { fg = c.red, bg = 'NONE' } },
+    { ['NavicIconsConstructor'] = { fg = c.yellow, bg = 'NONE' } },
+    { ['NavicIconsEnum'] = { fg = c.orange, bg = 'NONE' } },
+    { ['NavicIconsInterface'] = { fg = c.yellow, bg = 'NONE' } },
+    { ['NavicIconsFunction'] = { fg = c.cyan, bg = 'NONE' } },
+    { ['NavicIconsVariable'] = { fg = c.red, bg = 'NONE' } },
+    { ['NavicIconsConstant'] = { fg = c.orange, bg = 'NONE' } },
+    { ['NavicIconsString'] = { fg = c.yelloworange, bg = 'NONE' } },
+    { ['NavicIconsNumber'] = { fg = c.orange, bg = 'NONE' } },
+    { ['NavicIconsBoolean'] = { fg = c.orange, bg = 'NONE' } },
+    { ['NavicIconsArray'] = { fg = c.yellow, bg = 'NONE' } },
+    { ['NavicIconsObject'] = { fg = c.yellow, bg = 'NONE' } },
+    { ['NavicIconsKey'] = { fg = c.purple, bg = 'NONE' } },
+    { ['NavicIconsKeyword'] = { fg = c.purple, bg = 'NONE' } },
+    { ['NavicIconsNull'] = { fg = c.orange, bg = 'NONE' } },
+    { ['NavicIconsEnumMember'] = { fg = c.orange, bg = 'NONE' } },
+    { ['NavicIconsStruct'] = { fg = c.cyan, bg = 'NONE' } },
+    { ['NavicIconsEvent'] = { fg = c.yellow, bg = 'NONE' } },
+    { ['NavicIconsOperator'] = { fg = c.fg, bg = 'NONE' } },
+    { ['NavicIconsTypeParameter'] = { fg = c.red, bg = 'NONE' } },
+    { ['NavicText'] = { fg = c.fg, bg = 'NONE' } },
+    { ['NavicSeparator'] = { fg = c.fg, bg = 'NONE' } },
+  },
+
+  packer = {
+    { ['packerString'] = { fg = c.ui_orange, bg = 'NONE' } },
+    { ['packerHash'] = { fg = c.ui4_blue, bg = 'NONE' } },
+    { ['packerOutput'] = { fg = c.ui_purple, bg = 'NONE' } },
+    { ['packerRelDate'] = { fg = c.gray, bg = 'NONE' } },
+    { ['packerSuccess'] = { fg = c.success_green, bg = 'NONE' } },
+    { ['packerStatusSuccess'] = { fg = c.ui4_blue, bg = 'NONE' } },
+  },
+
+  symbols_outline = {
+    { ['SymbolsOutlineConnector'] = { fg = c.gray, bg = 'NONE' } },
+    { ['FocusedSymbol'] = { fg = 'NONE', bg = '#36383F' } },
+  },
+
+  notify = {
+    { ['NotifyERRORBorder'] = { fg = '#8A1F1F', bg = 'NONE' } },
+    { ['NotifyWARNBorder'] = { fg = '#79491D', bg = 'NONE' } },
+    { ['NotifyINFOBorder'] = { fg = c.ui_blue, bg = 'NONE' } },
+    { ['NotifyDEBUGBorder'] = { fg = c.gray, bg = 'NONE' } },
+    { ['NotifyTRACEBorder'] = { fg = '#4F3552', bg = 'NONE' } },
+    { ['NotifyERRORIcon'] = { fg = c.error, bg = 'NONE' } },
+    { ['NotifyWARNIcon'] = { fg = c.warn, bg = 'NONE' } },
+    { ['NotifyINFOIcon'] = { fg = c.ui4_blue, bg = 'NONE' } },
+    { ['NotifyDEBUGIcon'] = { fg = c.gray, bg = 'NONE' } },
+    { ['NotifyTRACEIcon'] = { fg = c.ui_purple, bg = 'NONE' } },
+    { ['NotifyERRORTitle'] = { fg = c.error, bg = 'NONE' } },
+    { ['NotifyWARNTitle'] = { fg = c.warn, bg = 'NONE' } },
+    { ['NotifyINFOTitle'] = { fg = c.ui4_blue, bg = 'NONE' } },
+    { ['NotifyDEBUGTitle'] = { fg = c.gray, bg = 'NONE' } },
+    { ['NotifyTRACETitle'] = { fg = c.ui_purple, bg = 'NONE' } },
+  },
+
+  hop = {
+    { ['HopNextKey'] = { fg = '#4ae0ff', bg = 'NONE' } },
+    { ['HopNextKey1'] = { fg = '#d44eed', bg = 'NONE' } },
+    { ['HopNextKey2'] = { fg = '#b42ecd', bg = 'NONE' } },
+    { ['HopUnmatched'] = { fg = c.gray, bg = 'NONE' } },
+    { ['HopPreview'] = { fg = '#c7ba7d', bg = 'NONE' } },
+  },
+
+  crates = {
+    { ['CratesNvimLoading'] = { fg = c.hint, bg = 'NONE' } },
+    { ['CratesNvimVersion'] = { fg = c.hint, bg = 'NONE' } },
+  },
+}
+
+---Add in any enabled plugin's custom highlighting
+---@param native_hls {[string]: horizon.Opts}
+---@param config horizon.Config
+local function integrate_plugins(native_hls, config)
+  for plugin, enabled in pairs(config.plugins) do
+    if enabled and plugins[plugin] then vim.list_extend(native_hls, plugins[plugin]) end
+  end
+end
+
+---@param config horizon.Config
+function M.set_highlights(config)
+  integrate_plugins(highlights, config)
   for _, value in ipairs(highlights) do
     local name = next(value)
     api.nvim_set_hl(0, name, value[name])

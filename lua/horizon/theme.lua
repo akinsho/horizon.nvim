@@ -463,8 +463,8 @@ local plugins = {
 
   indent_blankline = {
     { ['IndentBlanklineContextChar'] = { fg = c.context, bg = 'NONE' } },
-    { ['IndentBlanklineContextStart'] = { fg = 'NONE', bg = 'NONE', underline = true } },
-    { ['IndentBlanklineChar'] = { fg = c.gray, bg = 'NONE' } },
+    { ['IndentBlanklineContextStart'] = { fg = 'NONE', bg = 'NONE', sp = c.context, underline = true } },
+    { ['IndentBlanklineChar'] = { fg = c.pale_grey, bg = 'NONE' } },
   },
 
   cmp = {

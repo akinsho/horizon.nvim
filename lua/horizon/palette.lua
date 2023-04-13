@@ -1,5 +1,9 @@
 local colors = {
-  fg = "#8B8D8F",
+  dropdown = "#232530",
+  editor_line = "#22232D",
+  pale_grey = "#252732",
+  fg = "#C1C1C1", -- "#8B8D8F"
+
   bg = "#1D1F27",
   alt_fg = "#8B8D8F",
   alt_bg = "#1D1F27",

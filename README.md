@@ -1,4 +1,6 @@
-![Horizon screenshot](./assets/title.png)
+# horizon.nvim
+
+![logo](https://user-images.githubusercontent.com/22454918/231746321-fa9aa184-1414-4433-9997-b28242064940.png)
 
 A neovim implementation of the Horizon theme.
 
@@ -14,13 +16,11 @@ use "akinsho/horizon.nvim"
 vim.cmd.colorscheme('horizon')
 ```
 
-## Demo
+## Screenshots
 
-![1](./assets/demo1.png)
-![2](./assets/demo2.png)
-![3](./assets/demo3.png)
+<img width="2560" alt="first screenshot" src="https://user-images.githubusercontent.com/22454918/231746696-e56fcfa1-a788-41c7-836e-219589c5a1e6.png">
 
 ## Credit & References
 
-[horizon-theme](https://github.com/jolaleye/horizon-theme-vscode)
-[Original Lunarvim theme](https://github.com/lunarvim/horizon.nvim)
+- [horizon-theme](https://github.com/jolaleye/horizon-theme-vscode)
+- [lunarvim theme](https://github.com/lunarvim/horizon.nvim)

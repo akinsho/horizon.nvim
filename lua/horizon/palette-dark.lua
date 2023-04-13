@@ -1,0 +1,65 @@
+local colors = {
+  active_line_number_fg = '#D5D8DA',
+  bg = '#1C1E26',
+  codelens_fg = '#6C6F93',
+  comment = {
+    fg = '#BBBBBB',
+  },
+  constant = {
+    fg = '#F09483',
+  },
+  cursor_bg = '#1C1E26',
+  cursor_fg = '#E95378',
+  cursorline_bg = '#2E303E',
+  diff_added_bg = '#09F7A0',
+  diff_deleted_bg = '#F43E5C',
+  error = '#F43E5C',
+  fg = '#D5D8DA',
+  git_added_fg = '#27D797',
+  git_deleted_fg = '#F43E5C',
+  git_ignored_fg = '#D5D8DA',
+  git_modified_fg = '#FAB38E',
+  git_untracked_fg = '#27D797',
+  inactive_line_number_fg = '#D5D8DA',
+  indent_guide_active_fg = '#2E303E',
+  indent_guide_fg = '#2E303E',
+  keyword = {
+    fg = '#B877DB',
+  },
+  link = {
+    fg = '#FAB795',
+  },
+  match_paren = '#6C6F93',
+  method = {
+    fg = '#25B0BC',
+  },
+  operator = {
+    fg = '#BBBBBB',
+  },
+  pmenu_bg = '#232530',
+  pmenu_sel_bg = '#E95378',
+  pmenu_thumb_bg = '#6C6F93',
+  pmenu_thumb_fg = '#6C6F93',
+  sidebar_bg = '#1C1E26',
+  sidebar_fg = '#D5D8DA',
+  sign_added_bg = '#09F7A0',
+  sign_deleted_bg = '#F43E5C',
+  sign_modified_bg = '#21BFC2',
+  statusline_active_fg = '#2E303E',
+  statusline_bg = '#1C1E26',
+  statusline_fg = '#D5D8DA',
+  structure = {
+    fg = '#FAC29A',
+  },
+  tag = {
+    fg = '#E95678',
+  },
+  term_cursor_bg = '#D5D8DA',
+  term_cursor_fg = '#6C6F93',
+  visual = '#6C6F93',
+  warning = '#27D797',
+  winbar = '#232530',
+  winseparator_fg = '#1A1C23',
+}
+
+return colors

@@ -42,7 +42,7 @@ local defaults = {
   },
 }
 
----@param config horizon.Config
+---@param config horizon.Config?
 function M.setup(config)
   config = vim.tbl_deep_extend('force', defaults, config or {})
   local o, g = vim.o, vim.g

@@ -1,18 +1,13 @@
--- -----------------------------------------------------------------------------------------------
--- { WinSeparator = { fg = "#353647" } },
--- { Constant = { bold = true } },
--- { CursorLine = { bg = "#22232D" } },
--- { Pmenu = { bg = "#232530" } },
--- { PmenuSbar = { bg = "#16161C" } },
--- { PmenuThumb = { bg = "#6C6F93" } },
-
 local colors = {
-  dropdown = '#232530',
-  editor_line = '#22232D',
+  dropdown_bg = '#232530',
+  scroll_bg = '#16161C',
+  scroll_fg = '#6C6F93',
+  editor_line_bg = '#22232D',
   pale_grey = '#252732',
-  fg = '#C1C1C1', -- "#8B8D8F"
-
-  bg = '#1D1F27',
+  match_paren = '#6C6F93',
+  punctuation = '#BBBBBB',
+  fg = '#D5D8DA',
+  bg = '#1C1E26', -- #1D1F27
   alt_fg = '#8B8D8F',
   alt_bg = '#1D1F27',
   dark = '#16161C',

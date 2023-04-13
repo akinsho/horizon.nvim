@@ -1,7 +1,6 @@
 local fn, fmt = vim.fn, string.format
 
 ---@alias HLToken { colors: { [string]: string }, tokenColors: {settings: {foreground: string}, scope: string | string[]}[]}
----@alias Theme 'light' | 'dark'
 
 local current = {
   light = {

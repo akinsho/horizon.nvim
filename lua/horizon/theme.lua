@@ -1,571 +1,552 @@
 local c = require('horizon.palette')
 
+local api = vim.api
+
 local M = {}
 
-local hl = function(name, opts) vim.api.nvim_set_hl(name, opts) end
-
-M.set_highlights = function()
+local highlights = {
   -- Editor
-  hl('Normal', { fg = c.fg, bg = c.bg })
-  hl('SignColumn', { fg = 'NONE', bg = c.bg })
-  hl('MsgArea', { fg = c.fg, bg = c.bg })
-  hl('ModeMsg', { fg = c.fg, bg = c.alt_bg })
-  hl('MsgSeparator', { fg = c.fg, bg = c.bg })
-  hl('SpellBad', { fg = 'NONE', bg = 'NONE', sp = c.red, undercurl = true })
-  hl('SpellCap', { fg = 'NONE', bg = 'NONE', sp = c.yellow, undercurl = true })
-  hl('SpellLocal', { fg = 'NONE', bg = 'NONE', sp = c.yelloworange, underline = true })
-  hl('SpellRare', { fg = 'NONE', bg = 'NONE', sp = c.purple, underline = true })
-  hl('NormalNC', { fg = c.fg, bg = c.bg })
-  hl('Pmenu', { fg = c.light_gray, bg = c.alt_bg })
-  hl('PmenuSel', { fg = 'NONE', bg = c.ui2_blue })
-  hl('WildMenu', { fg = c.fg, bg = c.ui2_blue })
-  hl('CursorLineNr', { fg = c.light_gray, bg = 'NONE', bold = true })
-  hl('Folded', { fg = c.gray, bg = c.alt_bg })
-  hl('FoldColumn', { fg = c.gray, bg = c.alt_bg })
-  hl('LineNr', { fg = c.gray, bg = 'NONE' })
-  hl('FloatBoder', { fg = c.gray, bg = c.alt_bg })
-  hl('Whitespace', { fg = c.bg, bg = 'NONE' })
-  hl('VertSplit', { fg = c.gray, bg = c.bg })
-  hl('CursorLine', { fg = 'NONE', bg = c.dark_gray })
-  hl('CursorColumn', { fg = 'NONE', bg = c.alt_bg })
-  hl('ColorColumn', { fg = 'NONE', bg = c.alt_bg })
-  hl('NormalFloat', { fg = 'NONE', bg = c.alt_bg })
-  hl('Visual', { fg = 'NONE', bg = c.ui_blue })
-  hl('VisualNOS', { fg = 'NONE', bg = c.alt_bg })
-  hl('WarningMsg', { fg = c.error, bg = c.bg })
-  hl('DiffText', { fg = c.alt_bg, bg = c.sign_delete })
-  hl('DiffAdd', { fg = c.alt_bg, bg = c.sign_add })
-  hl('DiffChange', { fg = c.alt_bg, bg = c.sign_change, underline = true })
-  hl('DiffDelete', { fg = c.alt_bg, bg = c.sign_delete })
-  hl('QuickFixLine', { fg = 'NONE', bg = c.ui2_blue })
-  hl('PmenuSbar', { fg = 'NONE', bg = c.alt_bg })
-  hl('PmenuThumb', { fg = 'NONE', bg = c.gray })
-  hl('MatchWord', { fg = 'NONE', bg = 'NONE', underline = true })
-  hl('MatchParen', { fg = c.hint, bg = 'NONE', underline = true })
-  hl('MatchWordCur', { fg = 'NONE', bg = 'NONE', underline = true })
-  hl('MatchParenCur', { fg = 'NONE', bg = 'NONE', underline = true })
-  hl('Cursor', { fg = c.cursor_fg, bg = c.cursor_bg })
-  hl('lCursor', { fg = c.cursor_fg, bg = c.cursor_bg })
-  hl('CursorIM', { fg = c.cursor_fg, bg = c.cursor_bg })
-  hl('TermCursor', { fg = c.cursor_fg, bg = c.cursor_bg })
-  hl('TermCursorNC', { fg = c.cursor_fg, bg = c.cursor_bg })
-  hl('Conceal', { fg = c.gray, bg = 'NONE' })
-  hl('Directory', { fg = c.folder_blue, bg = 'NONE' })
-  hl('SpecialKey', { fg = c.red, bg = 'NONE', bold = true })
-  hl('ErrorMsg', { fg = c.error, bg = c.bg, bold = true })
-  hl('Search', { fg = 'NONE', bg = c.ui2_blue })
-  hl('IncSearch', { fg = 'NONE', bg = c.ui2_blue })
-  hl('Substitute', { fg = 'NONE', bg = c.ui2_blue })
-  hl('MoreMsg', { fg = c.orange, bg = 'NONE' })
-  hl('Question', { fg = c.orange, bg = 'NONE' })
-  hl('EndOfBuffer', { fg = c.bg, bg = 'NONE' })
-  hl('NonText', { fg = c.bg, bg = 'NONE' })
-  hl('TabLine', { fg = c.light_gray, bg = c.line })
-  hl('TabLineSel', { fg = c.fg, bg = c.line })
-  hl('TabLineFill', { fg = c.line, bg = c.line })
+  { ['Normal'] = { fg = c.fg, bg = c.bg } },
+  { ['NormalNC'] = { fg = c.fg, bg = c.bg } },
+  { ['SignColumn'] = { fg = 'NONE', bg = c.bg } },
+  { ['MsgArea'] = { fg = c.fg, bg = c.bg } },
+  { ['ModeMsg'] = { fg = c.fg, bg = c.alt_bg } },
+  { ['MsgSeparator'] = { fg = c.fg, bg = c.bg } },
+  { ['SpellBad'] = { fg = 'NONE', bg = 'NONE', sp = c.red, undercurl = true } },
+  { ['SpellCap'] = { fg = 'NONE', bg = 'NONE', sp = c.yellow, undercurl = true } },
+  { ['SpellLocal'] = { fg = 'NONE', bg = 'NONE', sp = c.yelloworange, underline = true } },
+  { ['SpellRare'] = { fg = 'NONE', bg = 'NONE', sp = c.purple, underline = true } },
+  { ['NormalNC'] = { fg = c.fg, bg = c.bg } },
+  { ['Pmenu'] = { fg = c.fg, bg = c.dropdown } },
+  { ['PmenuSel'] = { fg = 'NONE', bg = c.ui2_blue } },
+  { ['WildMenu'] = { fg = c.fg, bg = c.ui2_blue } },
+  { ['CursorLineNr'] = { fg = c.light_gray, bg = 'NONE', bold = true } },
+  { ['Folded'] = { fg = c.gray, bg = c.alt_bg } },
+  { ['FoldColumn'] = { fg = c.gray, bg = c.alt_bg } },
+  { ['LineNr'] = { fg = c.gray, bg = 'NONE' } },
+  { ['FloatBoder'] = { fg = c.gray, bg = c.alt_bg } },
+  { ['Whitespace'] = { fg = c.pale_grey, bg = 'NONE' } },
+  { ['VertSplit'] = { fg = c.gray, bg = c.bg } },
+  { ['CursorLine'] = { fg = 'NONE', bg = c.dark_gray } },
+  { ['CursorColumn'] = { fg = 'NONE', bg = c.alt_bg } },
+  { ['ColorColumn'] = { fg = 'NONE', bg = c.alt_bg } },
+  { ['NormalFloat'] = { fg = 'NONE', bg = c.alt_bg } },
+  { ['Visual'] = { fg = 'NONE', bg = c.ui_blue } },
+  { ['VisualNOS'] = { fg = 'NONE', bg = c.alt_bg } },
+  { ['WarningMsg'] = { fg = c.error, bg = c.bg } },
+  { ['DiffText'] = { fg = c.alt_bg, bg = c.sign_delete } },
+  { ['DiffAdd'] = { fg = c.alt_bg, bg = c.sign_add } },
+  { ['DiffChange'] = { fg = c.alt_bg, bg = c.sign_change, underline = true } },
+  { ['DiffDelete'] = { fg = c.alt_bg, bg = c.sign_delete } },
+  { ['QuickFixLine'] = { fg = 'NONE', bg = c.ui2_blue } },
+  { ['PmenuSbar'] = { fg = 'NONE', bg = c.alt_bg } },
+  { ['PmenuThumb'] = { fg = 'NONE', bg = c.gray } },
+  { ['MatchWord'] = { fg = 'NONE', bg = 'NONE', underline = true } },
+  { ['MatchParen'] = { fg = c.hint, bg = 'NONE', underline = true } },
+  { ['MatchWordCur'] = { fg = 'NONE', bg = 'NONE', underline = true } },
+  { ['MatchParenCur'] = { fg = 'NONE', bg = 'NONE', underline = true } },
+  { ['Cursor'] = { fg = c.cursor_fg, bg = c.cursor_bg } },
+  { ['lCursor'] = { fg = c.cursor_fg, bg = c.cursor_bg } },
+  { ['CursorIM'] = { fg = c.cursor_fg, bg = c.cursor_bg } },
+  { ['TermCursor'] = { fg = c.cursor_fg, bg = c.cursor_bg } },
+  { ['TermCursorNC'] = { fg = c.cursor_fg, bg = c.cursor_bg } },
+  { ['Conceal'] = { fg = c.gray, bg = 'NONE' } },
+  { ['Directory'] = { fg = c.folder_blue, bg = 'NONE' } },
+  { ['SpecialKey'] = { fg = c.red, bg = 'NONE', bold = true } },
+  { ['ErrorMsg'] = { fg = c.error, bg = c.bg, bold = true } },
+  { ['Search'] = { fg = 'NONE', bg = c.ui2_blue } },
+  { ['IncSearch'] = { fg = 'NONE', bg = c.ui2_blue } },
+  { ['Substitute'] = { fg = 'NONE', bg = c.ui2_blue } },
+  { ['MoreMsg'] = { fg = c.orange, bg = 'NONE' } },
+  { ['Question'] = { fg = c.orange, bg = 'NONE' } },
+  { ['EndOfBuffer'] = { fg = c.bg, bg = 'NONE' } },
+  { ['NonText'] = { fg = c.bg, bg = 'NONE' } },
+  { ['TabLine'] = { fg = c.light_gray, bg = c.line } },
+  { ['TabLineSel'] = { fg = c.fg, bg = c.line } },
+  { ['TabLineFill'] = { fg = c.line, bg = c.line } },
 
   -- Code
-  hl('Comment', { fg = c.gray, bg = 'NONE' })
-  hl('Variable', { fg = c.red, bg = 'NONE' })
-  hl('String', { fg = c.yelloworange, bg = 'NONE' })
-  hl('Character', { fg = c.yelloworange, bg = 'NONE' })
-  hl('Number', { fg = c.orange, bg = 'NONE' })
-  hl('Float', { fg = c.orange, bg = 'NONE' })
-  hl('Boolean', { fg = c.orange, bg = 'NONE' })
-  hl('Constant', { fg = c.orange, bg = 'NONE' })
-  hl('Type', { fg = c.yellow, bg = 'NONE' })
-  hl('Function', { fg = c.cyan, bg = 'NONE' })
-  hl('Keyword', { fg = c.purple, bg = 'NONE' })
-  hl('Conditional', { fg = c.purple, bg = 'NONE' })
-  hl('Repeat', { fg = c.purple, bg = 'NONE' })
-  hl('Operator', { fg = c.fg, bg = 'NONE' })
-  hl('PreProc', { fg = c.purple, bg = 'NONE' })
-  hl('Include', { fg = c.purple, bg = 'NONE' })
-  hl('Exception', { fg = c.purple, bg = 'NONE' })
-  hl('StorageClass', { fg = c.yellow, bg = 'NONE' })
-  hl('Structure', { fg = c.yellow, bg = 'NONE' })
-  hl('Typedef', { fg = c.purple, bg = 'NONE' })
-  hl('Define', { fg = c.purple, bg = 'NONE' })
-  hl('Macro', { fg = c.purple, bg = 'NONE' })
-  hl('Debug', { fg = c.red, bg = 'NONE' })
-  hl('Title', { fg = c.yellow, bg = 'NONE', bold = true })
-  hl('Label', { fg = c.fg, bg = 'NONE' })
-  hl('SpecialChar', { fg = c.yelloworange, bg = 'NONE' })
-  hl('Delimiter', { fg = c.fg, bg = 'NONE' })
-  hl('SpecialComment', { fg = c.fg, bg = 'NONE' })
-  hl('Tag', { fg = c.red, bg = 'NONE' })
-  hl('Bold', { fg = 'NONE', bg = 'NONE', bold = true })
-  hl('Italic', { fg = 'NONE', bg = 'NONE', italic = true })
-  hl('Underlined', { fg = 'NONE', bg = 'NONE', underline = true })
-  hl('Ignore', { fg = c.hint, bg = 'NONE', bold = true })
-  hl('Todo', { fg = c.info, bg = 'NONE', bold = true })
-  hl('Error', { fg = c.error, bg = 'NONE', bold = true })
-  hl('Statement', { fg = c.purple, bg = 'NONE' })
-  hl('Identifier', { fg = c.fg, bg = 'NONE' })
-  hl('PreCondit', { fg = c.purple, bg = 'NONE' })
-  hl('Special', { fg = c.orange, bg = 'NONE' })
+  { ['Comment'] = { fg = c.gray, bg = 'NONE' } },
+  { ['Variable'] = { fg = c.red, bg = 'NONE' } },
+  { ['String'] = { fg = c.yelloworange, bg = 'NONE' } },
+  { ['Character'] = { fg = c.yelloworange, bg = 'NONE' } },
+  { ['Number'] = { fg = c.orange, bg = 'NONE' } },
+  { ['Float'] = { fg = c.orange, bg = 'NONE' } },
+  { ['Boolean'] = { fg = c.orange, bg = 'NONE' } },
+  { ['Constant'] = { fg = c.orange, bg = 'NONE' } },
+  { ['Type'] = { fg = c.yellow, bg = 'NONE' } },
+  { ['Function'] = { fg = c.cyan, bg = 'NONE' } },
+  { ['Keyword'] = { fg = c.purple, bg = 'NONE' } },
+  { ['Conditional'] = { fg = c.purple, bg = 'NONE' } },
+  { ['Repeat'] = { fg = c.purple, bg = 'NONE' } },
+  { ['Operator'] = { fg = c.fg, bg = 'NONE' } },
+  { ['PreProc'] = { fg = c.purple, bg = 'NONE' } },
+  { ['Include'] = { fg = c.purple, bg = 'NONE' } },
+  { ['Exception'] = { fg = c.purple, bg = 'NONE' } },
+  { ['StorageClass'] = { fg = c.yellow, bg = 'NONE' } },
+  { ['Structure'] = { fg = c.yellow, bg = 'NONE' } },
+  { ['Typedef'] = { fg = c.purple, bg = 'NONE' } },
+  { ['Define'] = { fg = c.purple, bg = 'NONE' } },
+  { ['Macro'] = { fg = c.purple, bg = 'NONE' } },
+  { ['Debug'] = { fg = c.red, bg = 'NONE' } },
+  { ['Title'] = { fg = c.yellow, bg = 'NONE', bold = true } },
+  { ['Label'] = { fg = c.fg, bg = 'NONE' } },
+  { ['SpecialChar'] = { fg = c.yelloworange, bg = 'NONE' } },
+  { ['Delimiter'] = { fg = c.fg, bg = 'NONE' } },
+  { ['SpecialComment'] = { fg = c.fg, bg = 'NONE' } },
+  { ['Tag'] = { fg = c.red, bg = 'NONE' } },
+  { ['Bold'] = { fg = 'NONE', bg = 'NONE', bold = true } },
+  { ['Italic'] = { fg = 'NONE', bg = 'NONE', italic = true } },
+  { ['Underlined'] = { fg = 'NONE', bg = 'NONE', underline = true } },
+  { ['Ignore'] = { fg = c.hint, bg = 'NONE', bold = true } },
+  { ['Todo'] = { fg = c.info, bg = 'NONE', bold = true } },
+  { ['Error'] = { fg = c.error, bg = 'NONE', bold = true } },
+  { ['Statement'] = { fg = c.purple, bg = 'NONE' } },
+  { ['Identifier'] = { fg = c.fg, bg = 'NONE' } },
+  { ['PreCondit'] = { fg = c.purple, bg = 'NONE' } },
+  { ['Special'] = { fg = c.orange, bg = 'NONE' } },
 
   -- Treesitter
-  hl('TSComment', { link = 'Comment' })
-  hl('TSVariable', { link = 'Variable' })
-  hl('TSString', { link = 'String' })
-  hl('TSStringRegex', { link = 'String' })
-  hl('TSStringEscape', { link = 'String' })
-  hl('TSCharacter', { link = 'String' })
-  hl('TSCharacterSpecial', { link = 'SpecialChar' })
-  hl('TSNumber', { link = 'Number' })
-  hl('TSFloat', { link = 'Float' })
-  hl('TSBoolean', { link = 'Boolean' })
-  hl('TSConstant', { link = 'Constant' })
-  hl('TSConstBuiltin', { link = 'Constant' })
-  hl('TSConstructor', { link = 'Type' })
-  hl('TSType', { link = 'Type' })
-  hl('TSInclude', { link = 'Include' })
-  hl('TSException', { link = 'Exception' })
-  hl('TSKeyword', { link = 'Keyword' })
-  hl('TSKeywordReturn', { link = 'Keyword' })
-  hl('TSKeywordOperator', { link = 'Keyword' })
-  hl('TSKeywordFunction', { link = 'Keyword' })
-  hl('TSFunction', { link = 'Function' })
-  hl('TSFuncBuiltin', { link = 'Function' })
-  hl('TSMethod', { link = 'Function' })
-  hl('TSFuncMacro', { link = 'Function' })
-  hl('TSConditional', { link = 'Conditional' })
-  hl('TSRepeat', { link = 'Repeat' })
-  hl('TSOperator', { link = 'Operator' })
-  hl('TSPreProc', { link = 'PreProc' })
-  hl('TSStorageClass', { link = 'StorageClass' })
-  hl('TSStructure', { link = 'Structure' })
-  hl('TSTypeDefinition', { link = 'Typedef' })
-  hl('TSDefine', { link = 'Define' })
-  hl('TSNote', { link = 'Comment' })
-  hl('TSNone', { fg = c.light_gray, bg = 'NONE' })
-  hl('TSTodo', { link = 'Todo' })
-  hl('TSDebug', { link = 'Debug' })
-  hl('TSDanger', { link = 'Error' })
-  hl('TSTitle', { link = 'Title' })
-  hl('TSLabel', { link = 'Label' })
-  hl('TSPunctDelimiter', { link = 'Delimiter' })
-  hl('TSTagDelimiter', { fg = c.red, bg = 'NONE' })
-  hl('TSPunctBracket', { link = 'Delimiter' })
-  hl('TSPunctSpecial', { link = 'Delimiter' })
-  hl('TSTag', { link = 'Tag' })
-  hl('TSStrong', { link = 'Bold' })
-  hl('TSEmphasis', { link = 'Italic' })
-  hl('TSUnderline', { link = 'Underline' })
-  hl('TSStrike', { fg = 'NONE', bg = 'NONE', strikethrough = true })
-  hl('TSStringSpecial', { fg = c.fg, bg = 'NONE' })
-  hl('TSEnvironmentName', { fg = c.cyan, bg = 'NONE' })
-  hl('TSVariableBuiltin', { fg = c.yellow, bg = 'NONE' })
-  hl('TSConstMacro', { fg = c.orange, bg = 'NONE' })
-  hl('TSTypeBuiltin', { fg = c.orange, bg = 'NONE' })
-  hl('TSAnnotation', { fg = c.cyan, bg = 'NONE' })
-  hl('TSNamespace', { fg = c.cyan, bg = 'NONE' })
-  hl('TSSymbol', { fg = c.fg, bg = 'NONE' })
-  hl('TSField', { fg = c.red, bg = 'NONE' })
-  hl('TSProperty', { fg = c.red, bg = 'NONE' })
-  hl('TSParameter', { fg = c.red, bg = 'NONE' })
-  hl('TSParameterReference', { fg = c.red, bg = 'NONE' })
-  hl('TSAttribute', { fg = c.red, bg = 'NONE' })
-  hl('TSText', { fg = c.alt_fg, bg = 'NONE' })
-  hl('TSTagAttribute', { fg = c.orange, bg = 'NONE', italic = true })
-  hl('TSError', { fg = c.error, bg = 'NONE' })
-  hl('TSWarning', { fg = c.warn, bg = 'NONE' })
-  hl('TSQueryLinterError', { fg = c.error, bg = 'NONE' })
-  hl('TSURI', { fg = c.cyan, bg = 'NONE', underline = true })
-  hl('TSMath', { fg = c.yellow, bg = 'NONE' })
-  hl('TSLiteral', { fg = c.orange, bg = 'NONE' })
-  hl('@comment', { link = 'Comment' })
-  hl('@variable', { link = 'Variable' })
-  hl('@string', { link = 'String' })
-  hl('@string.regex', { link = 'String' })
-  hl('@string.escape', { link = 'String' })
-  hl('@character', { link = 'String' })
-  hl('@character.special', { link = 'SpecialChar' })
-  hl('@number', { link = 'Number' })
-  hl('@float', { link = 'Float' })
-  hl('@boolean', { link = 'Boolean' })
-  hl('@constant', { link = 'Constant' })
-  hl('@constant.builtin', { link = 'Constant' })
-  hl('@constructor', { link = 'Type' })
-  hl('@type', { link = 'Type' })
-  hl('@include', { link = 'Include' })
-  hl('@exception', { link = 'Exception' })
-  hl('@keyword', { link = 'Keyword' })
-  hl('@keyword.return', { link = 'Keyword' })
-  hl('@keyword.operator', { link = 'Keyword' })
-  hl('@keyword.function', { link = 'Keyword' })
-  hl('@function', { link = 'Function' })
-  hl('@function.builtin', { link = 'Function' })
-  hl('@method', { link = 'Function' })
-  hl('@function.macro', { link = 'Function' })
-  hl('@conditional', { link = 'Conditional' })
-  hl('@repeat', { link = 'Repeat' })
-  hl('@operator', { link = 'Operator' })
-  hl('@preproc', { link = 'PreProc' })
-  hl('@storageclass', { link = 'StorageClass' })
-  hl('@structure', { link = 'Structure' })
-  hl('@type.definition', { link = 'Typedef' })
-  hl('@define', { link = 'Define' })
-  hl('@note', { link = 'Comment' })
-  hl('@none', { fg = c.light_gray, bg = 'NONE' })
-  hl('@todo', { link = 'Todo' })
-  hl('@debug', { link = 'Debug' })
-  hl('@danger', { link = 'Error' })
-  hl('@title', { link = 'Title' })
-  hl('@label', { link = 'Label' })
-  hl('@punctuation.delimiter', { link = 'Delimiter' })
-  hl('@tag.delimiter', { fg = c.red, bg = 'NONE' })
-  hl('@punctuation.bracket', { link = 'Delimiter' })
-  hl('@punctuation.special', { link = 'Delimiter' })
-  hl('@tag', { link = 'Tag' })
-  hl('@strong', { link = 'Bold' })
-  hl('@emphasis', { link = 'Italic' })
-  hl('@underline', { link = 'Underline' })
-  hl('@strike', { fg = 'NONE', bg = 'NONE', strikethrough = true })
-  hl('@string.special', { fg = c.fg, bg = 'NONE' })
-  hl('@environment.name', { fg = c.cyan, bg = 'NONE' })
-  hl('@variable.builtin', { fg = c.yellow, bg = 'NONE' })
-  hl('@const.macro', { fg = c.orange, bg = 'NONE' })
-  hl('@type.builtin', { fg = c.orange, bg = 'NONE' })
-  hl('@annotation', { fg = c.cyan, bg = 'NONE' })
-  hl('@namespace', { fg = c.cyan, bg = 'NONE' })
-  hl('@symbol', { fg = c.fg, bg = 'NONE' })
-  hl('@field', { fg = c.red, bg = 'NONE' })
-  hl('@property', { fg = c.red, bg = 'NONE' })
-  hl('@parameter', { fg = c.red, bg = 'NONE' })
-  hl('@parameter.reference', { fg = c.red, bg = 'NONE' })
-  hl('@attribute', { fg = c.red, bg = 'NONE' })
-  hl('@text', { fg = c.alt_fg, bg = 'NONE' })
-  hl('@tag.attribute', { fg = c.orange, bg = 'NONE', italic = true })
-  hl('@error', { fg = c.error, bg = 'NONE' })
-  hl('@warning', { fg = c.warn, bg = 'NONE' })
-  hl('@query.linter.error', { fg = c.error, bg = 'NONE' })
-  hl('@uri', { fg = c.cyan, bg = 'NONE', underline = true })
-  hl('@math', { fg = c.yellow, bg = 'NONE' })
+  { ['TSComment'] = { link = 'Comment' } },
+  { ['TSVariable'] = { link = 'Variable' } },
+  { ['TSString'] = { link = 'String' } },
+  { ['TSStringRegex'] = { link = 'String' } },
+  { ['TSStringEscape'] = { link = 'String' } },
+  { ['TSCharacter'] = { link = 'String' } },
+  { ['TSCharacterSpecial'] = { link = 'SpecialChar' } },
+  { ['TSNumber'] = { link = 'Number' } },
+  { ['TSFloat'] = { link = 'Float' } },
+  { ['TSBoolean'] = { link = 'Boolean' } },
+  { ['TSConstant'] = { link = 'Constant' } },
+  { ['TSConstBuiltin'] = { link = 'Constant' } },
+  { ['TSConstructor'] = { link = 'Type' } },
+  { ['TSType'] = { link = 'Type' } },
+  { ['TSInclude'] = { link = 'Include' } },
+  { ['TSException'] = { link = 'Exception' } },
+  { ['TSKeyword'] = { link = 'Keyword' } },
+  { ['TSKeywordReturn'] = { link = 'Keyword' } },
+  { ['TSKeywordOperator'] = { link = 'Keyword' } },
+  { ['TSKeywordFunction'] = { link = 'Keyword' } },
+  { ['TSFunction'] = { link = 'Function' } },
+  { ['TSFuncBuiltin'] = { link = 'Function' } },
+  { ['TSMethod'] = { link = 'Function' } },
+  { ['TSFuncMacro'] = { link = 'Function' } },
+  { ['TSConditional'] = { link = 'Conditional' } },
+  { ['TSRepeat'] = { link = 'Repeat' } },
+  { ['TSOperator'] = { link = 'Operator' } },
+  { ['TSPreProc'] = { link = 'PreProc' } },
+  { ['TSStorageClass'] = { link = 'StorageClass' } },
+  { ['TSStructure'] = { link = 'Structure' } },
+  { ['TSTypeDefinition'] = { link = 'Typedef' } },
+  { ['TSDefine'] = { link = 'Define' } },
+  { ['TSNote'] = { link = 'Comment' } },
+  { ['TSNone'] = { fg = c.light_gray, bg = 'NONE' } },
+  { ['TSTodo'] = { link = 'Todo' } },
+  { ['TSDebug'] = { link = 'Debug' } },
+  { ['TSDanger'] = { link = 'Error' } },
+  { ['TSTitle'] = { link = 'Title' } },
+  { ['TSLabel'] = { link = 'Label' } },
+  { ['TSPunctDelimiter'] = { link = 'Delimiter' } },
+  { ['TSTagDelimiter'] = { fg = c.red, bg = 'NONE' } },
+  { ['TSPunctBracket'] = { link = 'Delimiter' } },
+  { ['TSPunctSpecial'] = { link = 'Delimiter' } },
+  { ['TSTag'] = { link = 'Tag' } },
+  { ['TSStrong'] = { link = 'Bold' } },
+  { ['TSEmphasis'] = { link = 'Italic' } },
+  { ['TSUnderline'] = { link = 'Underline' } },
+  { ['TSStrike'] = { fg = 'NONE', bg = 'NONE', strikethrough = true } },
+  { ['TSStringSpecial'] = { fg = c.fg, bg = 'NONE' } },
+  { ['TSEnvironmentName'] = { fg = c.cyan, bg = 'NONE' } },
+  { ['TSVariableBuiltin'] = { fg = c.yellow, bg = 'NONE' } },
+  { ['TSConstMacro'] = { fg = c.orange, bg = 'NONE' } },
+  { ['TSTypeBuiltin'] = { fg = c.orange, bg = 'NONE' } },
+  { ['TSAnnotation'] = { fg = c.cyan, bg = 'NONE' } },
+  { ['TSNamespace'] = { fg = c.cyan, bg = 'NONE' } },
+  { ['TSSymbol'] = { fg = c.fg, bg = 'NONE' } },
+  { ['TSField'] = { fg = c.red, bg = 'NONE' } },
+  { ['TSProperty'] = { fg = c.red, bg = 'NONE' } },
+  { ['TSParameter'] = { fg = c.red, bg = 'NONE' } },
+  { ['TSParameterReference'] = { fg = c.red, bg = 'NONE' } },
+  { ['TSAttribute'] = { fg = c.red, bg = 'NONE' } },
+  { ['TSText'] = { fg = c.alt_fg, bg = 'NONE' } },
+  { ['TSTagAttribute'] = { fg = c.orange, bg = 'NONE', italic = true } },
+  { ['TSError'] = { fg = c.error, bg = 'NONE' } },
+  { ['TSWarning'] = { fg = c.warn, bg = 'NONE' } },
+  { ['TSQueryLinterError'] = { fg = c.error, bg = 'NONE' } },
+  { ['TSURI'] = { fg = c.cyan, bg = 'NONE', underline = true } },
+  { ['TSMath'] = { fg = c.yellow, bg = 'NONE' } },
+  { ['TSLiteral'] = { fg = c.orange, bg = 'NONE' } },
+  { ['@comment'] = { link = 'Comment' } },
+  { ['@variable'] = { link = 'Variable' } },
+  { ['@string'] = { link = 'String' } },
+  { ['@string.regex'] = { link = 'String' } },
+  { ['@string.escape'] = { link = 'String' } },
+  { ['@character'] = { link = 'String' } },
+  { ['@character.special'] = { link = 'SpecialChar' } },
+  { ['@number'] = { link = 'Number' } },
+  { ['@float'] = { link = 'Float' } },
+  { ['@boolean'] = { link = 'Boolean' } },
+  { ['@constant'] = { link = 'Constant' } },
+  { ['@constant.builtin'] = { link = 'Constant' } },
+  { ['@constructor'] = { link = 'Type' } },
+  { ['@type'] = { link = 'Type' } },
+  { ['@include'] = { link = 'Include' } },
+  { ['@exception'] = { link = 'Exception' } },
+  { ['@keyword'] = { link = 'Keyword' } },
+  { ['@keyword.return'] = { link = 'Keyword' } },
+  { ['@keyword.operator'] = { link = 'Keyword' } },
+  { ['@keyword.function'] = { link = 'Keyword' } },
+  { ['@function'] = { link = 'Function' } },
+  { ['@function.builtin'] = { link = 'Function' } },
+  { ['@method'] = { link = 'Function' } },
+  { ['@function.macro'] = { link = 'Function' } },
+  { ['@conditional'] = { link = 'Conditional' } },
+  { ['@repeat'] = { link = 'Repeat' } },
+  { ['@operator'] = { link = 'Operator' } },
+  { ['@preproc'] = { link = 'PreProc' } },
+  { ['@storageclass'] = { link = 'StorageClass' } },
+  { ['@structure'] = { link = 'Structure' } },
+  { ['@type.definition'] = { link = 'Typedef' } },
+  { ['@define'] = { link = 'Define' } },
+  { ['@note'] = { link = 'Comment' } },
+  { ['@none'] = { fg = c.light_gray, bg = 'NONE' } },
+  { ['@todo'] = { link = 'Todo' } },
+  { ['@debug'] = { link = 'Debug' } },
+  { ['@danger'] = { link = 'Error' } },
+  { ['@title'] = { link = 'Title' } },
+  { ['@label'] = { link = 'Label' } },
+  { ['@punctuation.delimiter'] = { link = 'Delimiter' } },
+  { ['@tag.delimiter'] = { fg = c.red, bg = 'NONE' } },
+  { ['@punctuation.bracket'] = { link = 'Delimiter' } },
+  { ['@punctuation.special'] = { link = 'Delimiter' } },
+  { ['@tag'] = { link = 'Tag' } },
+  { ['@strong'] = { link = 'Bold' } },
+  { ['@emphasis'] = { link = 'Italic' } },
+  { ['@underline'] = { link = 'Underline' } },
+  { ['@strike'] = { fg = 'NONE', bg = 'NONE', strikethrough = true } },
+  { ['@string.special'] = { fg = c.fg, bg = 'NONE' } },
+  { ['@environment.name'] = { fg = c.cyan, bg = 'NONE' } },
+  { ['@variable.builtin'] = { fg = c.yellow, bg = 'NONE' } },
+  { ['@const.macro'] = { fg = c.orange, bg = 'NONE' } },
+  { ['@type.builtin'] = { fg = c.orange, bg = 'NONE' } },
+  { ['@annotation'] = { fg = c.cyan, bg = 'NONE' } },
+  { ['@namespace'] = { fg = c.cyan, bg = 'NONE' } },
+  { ['@symbol'] = { fg = c.fg, bg = 'NONE' } },
+  { ['@field'] = { fg = c.red, bg = 'NONE' } },
+  { ['@property'] = { fg = c.red, bg = 'NONE' } },
+  { ['@parameter'] = { fg = c.red, bg = 'NONE' } },
+  { ['@parameter.reference'] = { fg = c.red, bg = 'NONE' } },
+  { ['@attribute'] = { fg = c.red, bg = 'NONE' } },
+  { ['@text'] = { fg = c.alt_fg, bg = 'NONE' } },
+  { ['@tag.attribute'] = { fg = c.orange, bg = 'NONE', italic = true } },
+  { ['@error'] = { fg = c.error, bg = 'NONE' } },
+  { ['@warning'] = { fg = c.warn, bg = 'NONE' } },
+  { ['@query.linter.error'] = { fg = c.error, bg = 'NONE' } },
+  { ['@uri'] = { fg = c.cyan, bg = 'NONE', underline = true } },
+  { ['@math'] = { fg = c.yellow, bg = 'NONE' } },
 
   -- LspSemanticTokens
-  hl('@lsp.type.namespace', { link = '@namespace' })
-  hl('@lsp.type.type', { link = '@type' })
-  hl('@lsp.type.class', { link = '@type' })
-  hl('@lsp.type.enum', { link = '@type' })
-  hl('@lsp.type.interface', { link = '@type' })
-  hl('@lsp.type.struct', { link = '@structure' })
-  hl('@lsp.type.typeParameter', { link = 'TypeDef' })
-  hl('@lsp.type.variable', { link = '@variable' })
-  hl('@lsp.type.property', { link = '@property' })
-  hl('@lsp.type.enumMember', { link = '@constant' })
-  hl('@lsp.type.function', { link = '@function' })
-  hl('@lsp.type.method', { link = '@method' })
-  hl('@lsp.type.macro', { link = '@macro' })
-  hl('@lsp.type.decorator', { link = '@function' })
-  hl('@lsp.typemod.variable.readonly', { link = '@constant' })
-  hl('@lsp.typemod.method.defaultLibrary', { link = '@function.builtin' })
-  hl('@lsp.typemod.function.defaultLibrary', { link = '@function.builtin' })
-  hl('@lsp.typemod.variable.defaultLibrary', { link = '@variable.builtin' })
-  hl('@lsp.mod.deprecated', { fg = 'NONE', bg = 'NONE', strikethrough = true })
-
-  -- LspSemanticTokens
-  hl('@lsp.type.namespace', { link = '@namespace' })
-  hl('@lsp.type.type', { link = '@type' })
-  hl('@lsp.type.class', { link = '@type' })
-  hl('@lsp.type.enum', { link = '@type' })
-  hl('@lsp.type.interface', { link = '@type' })
-  hl('@lsp.type.struct', { link = '@structure' })
-  hl('@lsp.type.typeParameter', { link = 'TypeDef' })
-  hl('@lsp.type.variable', { link = '@variable' })
-  hl('@lsp.type.property', { link = '@property' })
-  hl('@lsp.type.enumMember', { link = '@constant' })
-  hl('@lsp.type.function', { link = '@function' })
-  hl('@lsp.type.method', { link = '@method' })
-  hl('@lsp.type.macro', { link = '@macro' })
-  hl('@lsp.type.decorator', { link = '@function' })
-  hl('@lsp.typemod.variable.readonly', { link = '@constant' })
-  hl('@lsp.typemod.method.defaultLibrary', { link = '@function.builtin' })
-  hl('@lsp.typemod.function.defaultLibrary', { link = '@function.builtin' })
-  hl('@lsp.typemod.variable.defaultLibrary', { link = '@variable.builtin' })
-  hl('@lsp.mod.deprecated', { fg = 'NONE', bg = 'NONE', strikethrough = true })
+  { ['@lsp.type.namespace'] = { link = '@namespace' } },
+  { ['@lsp.type.type'] = { link = '@type' } },
+  { ['@lsp.type.class'] = { link = '@type' } },
+  { ['@lsp.type.enum'] = { link = '@type' } },
+  { ['@lsp.type.interface'] = { link = '@type' } },
+  { ['@lsp.type.struct'] = { link = '@structure' } },
+  { ['@lsp.type.typeParameter'] = { link = 'TypeDef' } },
+  { ['@lsp.type.variable'] = { link = '@variable' } },
+  { ['@lsp.type.property'] = { link = '@property' } },
+  { ['@lsp.type.enumMember'] = { link = '@constant' } },
+  { ['@lsp.type.function'] = { link = '@function' } },
+  { ['@lsp.type.method'] = { link = '@method' } },
+  { ['@lsp.type.macro'] = { link = '@macro' } },
+  { ['@lsp.type.decorator'] = { link = '@function' } },
+  { ['@lsp.typemod.variable.readonly'] = { link = '@constant' } },
+  { ['@lsp.typemod.method.defaultLibrary'] = { link = '@function.builtin' } },
+  { ['@lsp.typemod.function.defaultLibrary'] = { link = '@function.builtin' } },
+  { ['@lsp.typemod.variable.defaultLibrary'] = { link = '@variable.builtin' } },
+  { ['@lsp.mod.deprecated'] = { fg = 'NONE', bg = 'NONE', strikethrough = true } },
 
   -- Whichkey
-  hl('WhichKey', { fg = c.purple, bg = 'NONE' })
-  hl('WhichKeySeperator', { fg = c.yellow, bg = 'NONE' })
-  hl('WhichKeyGroup', { fg = c.red, bg = 'NONE' })
-  hl('WhichKeyDesc', { fg = c.fg, bg = 'NONE' })
-  hl('WhichKeyFloat', { fg = 'NONE', bg = c.alt_bg })
+  { ['WhichKey'] = { fg = c.purple, bg = 'NONE' } },
+  { ['WhichKeySeperator'] = { fg = c.yellow, bg = 'NONE' } },
+  { ['WhichKeyGroup'] = { fg = c.red, bg = 'NONE' } },
+  { ['WhichKeyDesc'] = { fg = c.fg, bg = 'NONE' } },
+  { ['WhichKeyFloat'] = { fg = 'NONE', bg = c.alt_bg } },
 
   -- Git
-  hl('SignAdd', { fg = c.sign_add, bg = 'NONE' })
-  hl('SignChange', { fg = c.sign_change, bg = 'NONE' })
-  hl('SignDelete', { fg = c.sign_delete, bg = 'NONE' })
-  hl('GitSignsAdd', { fg = c.sign_add, bg = 'NONE' })
-  hl('GitSignsChange', { fg = c.sign_change, bg = 'NONE' })
-  hl('GitSignsDelete', { fg = c.sign_delete, bg = 'NONE' })
+  { ['SignAdd'] = { fg = c.sign_add, bg = 'NONE' } },
+  { ['SignChange'] = { fg = c.sign_change, bg = 'NONE' } },
+  { ['SignDelete'] = { fg = c.sign_delete, bg = 'NONE' } },
+  { ['GitSignsAdd'] = { fg = c.sign_add, bg = 'NONE' } },
+  { ['GitSignsChange'] = { fg = c.sign_change, bg = 'NONE' } },
+  { ['GitSignsDelete'] = { fg = c.sign_delete, bg = 'NONE' } },
 
   -- LSP
-  hl('DiagnosticHint', { fg = c.hint, bg = 'NONE' })
-  hl('DiagnosticInfo', { fg = c.info, bg = 'NONE' })
-  hl('DiagnosticWarn', { fg = c.warn, bg = 'NONE' })
-  hl('DiagnosticError', { fg = c.error, bg = 'NONE' })
-  hl('DiagnosticOther', { fg = c.ui_purple, bg = 'NONE' })
-  hl('DiagnosticSignHint', { link = 'DiagnosticHint' })
-  hl('DiagnosticSignInfo', { link = 'DiagnosticInfo' })
-  hl('DiagnosticSignWarn', { link = 'DiagnosticWarn' })
-  hl('DiagnosticSignError', { link = 'DiagnosticError' })
-  hl('DiagnosticSignOther', { link = 'DiagnosticOther' })
-  hl('DiagnosticSignWarning', { link = 'DiagnosticWarn' })
-  hl('DiagnosticFloatingHint', { link = 'DiagnosticHint' })
-  hl('DiagnosticFloatingInfo', { link = 'DiagnosticInfo' })
-  hl('DiagnosticFloatingWarn', { link = 'DiagnosticWarn' })
-  hl('DiagnosticFloatingError', { link = 'DiagnosticError' })
-  hl('DiagnosticUnderlineHint', { fg = 'NONE', bg = 'NONE', sp = c.hint, undercurl = true })
-  hl('DiagnosticUnderlineInfo', { fg = 'NONE', bg = 'NONE', sp = c.info, undercurl = true })
-  hl('DiagnosticUnderlineWarn', { fg = 'NONE', bg = 'NONE', sp = c.warn, undercurl = true })
-  hl('DiagnosticUnderlineError', { fg = 'NONE', bg = 'NONE', sp = c.error, undercurl = true })
-  hl('DiagnosticSignInformation', { link = 'DiagnosticInfo' })
-  hl('DiagnosticVirtualTextHint', { fg = c.hint, bg = c.hint_bg })
-  hl('DiagnosticVirtualTextInfo', { fg = c.info, bg = c.info_bg })
-  hl('DiagnosticVirtualTextWarn', { fg = c.warn, bg = c.warn_bg })
-  hl('DiagnosticVirtualTextError', { fg = c.error, bg = c.error_bg })
-  hl('LspDiagnosticsError', { fg = c.error, bg = 'NONE' })
-  hl('LspDiagnosticsWarning', { fg = c.warn, bg = 'NONE' })
-  hl('LspDiagnosticsInfo', { fg = c.info, bg = 'NONE' })
-  hl('LspDiagnosticsInformation', { link = 'LspDiagnosticsInfo' })
-  hl('LspDiagnosticsHint', { fg = c.hint, bg = 'NONE' })
-  hl('LspDiagnosticsDefaultError', { link = 'LspDiagnosticsError' })
-  hl('LspDiagnosticsDefaultWarning', { link = 'LspDiagnosticsWarning' })
-  hl('LspDiagnosticsDefaultInformation', { link = 'LspDiagnosticsInfo' })
-  hl('LspDiagnosticsDefaultInfo', { link = 'LspDiagnosticsInfo' })
-  hl('LspDiagnosticsDefaultHint', { link = 'LspDiagnosticsHint' })
-  hl('LspDiagnosticsVirtualTextError', { link = 'DiagnosticVirtualTextError' })
-  hl('LspDiagnosticsVirtualTextWarning', { link = 'DiagnosticVirtualTextWarn' })
-  hl('LspDiagnosticsVirtualTextInformation', { link = 'DiagnosticVirtualTextInfo' })
-  hl('LspDiagnosticsVirtualTextInfo', { link = 'DiagnosticVirtualTextInfo' })
-  hl('LspDiagnosticsVirtualTextHint', { link = 'DiagnosticVirtualTextHint' })
-  hl('LspDiagnosticsFloatingError', { link = 'LspDiagnosticsError' })
-  hl('LspDiagnosticsFloatingWarning', { link = 'LspDiagnosticsWarning' })
-  hl('LspDiagnosticsFloatingInformation', { link = 'LspDiagnosticsInfo' })
-  hl('LspDiagnosticsFloatingInfo', { link = 'LspDiagnosticsInfo' })
-  hl('LspDiagnosticsFloatingHint', { link = 'LspDiagnosticsHint' })
-  hl('LspDiagnosticsSignError', { link = 'LspDiagnosticsError' })
-  hl('LspDiagnosticsSignWarning', { link = 'LspDiagnosticsWarning' })
-  hl('LspDiagnosticsSignInformation', { link = 'LspDiagnosticsInfo' })
-  hl('LspDiagnosticsSignInfo', { link = 'LspDiagnosticsInfo' })
-  hl('LspDiagnosticsSignHint', { link = 'LspDiagnosticsHint' })
-  hl('NvimTreeLspDiagnosticsError', { link = 'LspDiagnosticsError' })
-  hl('NvimTreeLspDiagnosticsWarning', { link = 'LspDiagnosticsWarning' })
-  hl('NvimTreeLspDiagnosticsInformation', { link = 'LspDiagnosticsInfo' })
-  hl('NvimTreeLspDiagnosticsInfo', { link = 'LspDiagnosticsInfo' })
-  hl('NvimTreeLspDiagnosticsHint', { link = 'LspDiagnosticsHint' })
-  hl('LspDiagnosticsUnderlineError', { link = 'DiagnosticUnderlineError' })
-  hl('LspDiagnosticsUnderlineWarning', { link = 'DiagnosticUnderlineWarn' })
-  hl('LspDiagnosticsUnderlineInformation', { link = 'DiagnosticUnderlineInfo' })
-  hl('LspDiagnosticsUnderlineInfo', { link = 'DiagnosticUnderlineInfo' })
-  hl('LspDiagnosticsUnderlineHint', { link = 'DiagnosticUnderlineHint' })
-  hl('LspReferenceRead', { fg = 'NONE', bg = c.reference })
-  hl('LspReferenceText', { fg = 'NONE', bg = c.reference })
-  hl('LspReferenceWrite', { fg = 'NONE', bg = c.reference })
-  hl('LspCodeLens', { fg = c.context, bg = 'NONE', italic = true })
-  hl('LspCodeLensSeparator', { fg = c.context, bg = 'NONE', italic = true })
+  { ['DiagnosticHint'] = { fg = c.hint, bg = 'NONE' } },
+  { ['DiagnosticInfo'] = { fg = c.info, bg = 'NONE' } },
+  { ['DiagnosticWarn'] = { fg = c.warn, bg = 'NONE' } },
+  { ['DiagnosticError'] = { fg = c.error, bg = 'NONE' } },
+  { ['DiagnosticOther'] = { fg = c.ui_purple, bg = 'NONE' } },
+  { ['DiagnosticSignHint'] = { link = 'DiagnosticHint' } },
+  { ['DiagnosticSignInfo'] = { link = 'DiagnosticInfo' } },
+  { ['DiagnosticSignWarn'] = { link = 'DiagnosticWarn' } },
+  { ['DiagnosticSignError'] = { link = 'DiagnosticError' } },
+  { ['DiagnosticSignOther'] = { link = 'DiagnosticOther' } },
+  { ['DiagnosticSignWarning'] = { link = 'DiagnosticWarn' } },
+  { ['DiagnosticFloatingHint'] = { link = 'DiagnosticHint' } },
+  { ['DiagnosticFloatingInfo'] = { link = 'DiagnosticInfo' } },
+  { ['DiagnosticFloatingWarn'] = { link = 'DiagnosticWarn' } },
+  { ['DiagnosticFloatingError'] = { link = 'DiagnosticError' } },
+  { ['DiagnosticUnderlineHint'] = { fg = 'NONE', bg = 'NONE', sp = c.hint, undercurl = true } },
+  { ['DiagnosticUnderlineInfo'] = { fg = 'NONE', bg = 'NONE', sp = c.info, undercurl = true } },
+  { ['DiagnosticUnderlineWarn'] = { fg = 'NONE', bg = 'NONE', sp = c.warn, undercurl = true } },
+  { ['DiagnosticUnderlineError'] = { fg = 'NONE', bg = 'NONE', sp = c.error, undercurl = true } },
+  { ['DiagnosticSignInformation'] = { link = 'DiagnosticInfo' } },
+  { ['DiagnosticVirtualTextHint'] = { fg = c.hint, bg = c.hint_bg } },
+  { ['DiagnosticVirtualTextInfo'] = { fg = c.info, bg = c.info_bg } },
+  { ['DiagnosticVirtualTextWarn'] = { fg = c.warn, bg = c.warn_bg } },
+  { ['DiagnosticVirtualTextError'] = { fg = c.error, bg = c.error_bg } },
+  { ['LspDiagnosticsError'] = { fg = c.error, bg = 'NONE' } },
+  { ['LspDiagnosticsWarning'] = { fg = c.warn, bg = 'NONE' } },
+  { ['LspDiagnosticsInfo'] = { fg = c.info, bg = 'NONE' } },
+  { ['LspDiagnosticsInformation'] = { link = 'LspDiagnosticsInfo' } },
+  { ['LspDiagnosticsHint'] = { fg = c.hint, bg = 'NONE' } },
+  { ['LspDiagnosticsDefaultError'] = { link = 'LspDiagnosticsError' } },
+  { ['LspDiagnosticsDefaultWarning'] = { link = 'LspDiagnosticsWarning' } },
+  { ['LspDiagnosticsDefaultInformation'] = { link = 'LspDiagnosticsInfo' } },
+  { ['LspDiagnosticsDefaultInfo'] = { link = 'LspDiagnosticsInfo' } },
+  { ['LspDiagnosticsDefaultHint'] = { link = 'LspDiagnosticsHint' } },
+  { ['LspDiagnosticsVirtualTextError'] = { link = 'DiagnosticVirtualTextError' } },
+  { ['LspDiagnosticsVirtualTextWarning'] = { link = 'DiagnosticVirtualTextWarn' } },
+  { ['LspDiagnosticsVirtualTextInformation'] = { link = 'DiagnosticVirtualTextInfo' } },
+  { ['LspDiagnosticsVirtualTextInfo'] = { link = 'DiagnosticVirtualTextInfo' } },
+  { ['LspDiagnosticsVirtualTextHint'] = { link = 'DiagnosticVirtualTextHint' } },
+  { ['LspDiagnosticsFloatingError'] = { link = 'LspDiagnosticsError' } },
+  { ['LspDiagnosticsFloatingWarning'] = { link = 'LspDiagnosticsWarning' } },
+  { ['LspDiagnosticsFloatingInformation'] = { link = 'LspDiagnosticsInfo' } },
+  { ['LspDiagnosticsFloatingInfo'] = { link = 'LspDiagnosticsInfo' } },
+  { ['LspDiagnosticsFloatingHint'] = { link = 'LspDiagnosticsHint' } },
+  { ['LspDiagnosticsSignError'] = { link = 'LspDiagnosticsError' } },
+  { ['LspDiagnosticsSignWarning'] = { link = 'LspDiagnosticsWarning' } },
+  { ['LspDiagnosticsSignInformation'] = { link = 'LspDiagnosticsInfo' } },
+  { ['LspDiagnosticsSignInfo'] = { link = 'LspDiagnosticsInfo' } },
+  { ['LspDiagnosticsSignHint'] = { link = 'LspDiagnosticsHint' } },
+  { ['NvimTreeLspDiagnosticsError'] = { link = 'LspDiagnosticsError' } },
+  { ['NvimTreeLspDiagnosticsWarning'] = { link = 'LspDiagnosticsWarning' } },
+  { ['NvimTreeLspDiagnosticsInformation'] = { link = 'LspDiagnosticsInfo' } },
+  { ['NvimTreeLspDiagnosticsInfo'] = { link = 'LspDiagnosticsInfo' } },
+  { ['NvimTreeLspDiagnosticsHint'] = { link = 'LspDiagnosticsHint' } },
+  { ['LspDiagnosticsUnderlineError'] = { link = 'DiagnosticUnderlineError' } },
+  { ['LspDiagnosticsUnderlineWarning'] = { link = 'DiagnosticUnderlineWarn' } },
+  { ['LspDiagnosticsUnderlineInformation'] = { link = 'DiagnosticUnderlineInfo' } },
+  { ['LspDiagnosticsUnderlineInfo'] = { link = 'DiagnosticUnderlineInfo' } },
+  { ['LspDiagnosticsUnderlineHint'] = { link = 'DiagnosticUnderlineHint' } },
+  { ['LspReferenceRead'] = { fg = 'NONE', bg = c.reference } },
+  { ['LspReferenceText'] = { fg = 'NONE', bg = c.reference } },
+  { ['LspReferenceWrite'] = { fg = 'NONE', bg = c.reference } },
+  { ['LspCodeLens'] = { fg = c.context, bg = 'NONE', italic = true } },
+  { ['LspCodeLensSeparator'] = { fg = c.context, bg = 'NONE', italic = true } },
 
   -- Quickscope
-  hl('QuickScopePrimary', { fg = '#ff007c', bg = 'NONE', underline = true })
-  hl('QuickScopeSecondary', { fg = '#00dfff', bg = 'NONE', underline = true })
+  { ['QuickScopePrimary'] = { fg = '#ff007c', bg = 'NONE', underline = true } },
+  { ['QuickScopeSecondary'] = { fg = '#00dfff', bg = 'NONE', underline = true } },
 
   -- Telescope
-  hl('TelescopeSelection', { fg = 'NONE', bg = c.ui2_blue })
-  hl('TelescopeSelectionCaret', { fg = c.red, bg = c.ui2_blue })
-  hl('TelescopeMatching', { fg = c.yellow, bg = 'NONE', bold = true, italic = true })
-  hl('TelescopeBorder', { fg = c.alt_fg, bg = 'NONE' })
-  hl('TelescopeNormal', { fg = c.light_gray, bg = c.alt_bg })
-  hl('TelescopePromptTitle', { fg = c.orange, bg = 'NONE' })
-  hl('TelescopePromptPrefix', { fg = c.cyan, bg = 'NONE' })
-  hl('TelescopeResultsTitle', { fg = c.orange, bg = 'NONE' })
-  hl('TelescopePreviewTitle', { fg = c.orange, bg = 'NONE' })
-  hl('TelescopePromptCounter', { fg = c.red, bg = 'NONE' })
-  hl('TelescopePreviewHyphen', { fg = c.red, bg = 'NONE' })
+  { ['TelescopeSelection'] = { fg = 'NONE', bg = c.ui2_blue } },
+  { ['TelescopeSelectionCaret'] = { fg = c.red, bg = c.ui2_blue } },
+  { ['TelescopeMatching'] = { fg = c.yellow, bg = 'NONE', bold = true, italic = true } },
+  { ['TelescopeBorder'] = { fg = c.alt_fg, bg = 'NONE' } },
+  { ['TelescopeNormal'] = { fg = c.light_gray, bg = c.alt_bg } },
+  { ['TelescopePromptTitle'] = { fg = c.orange, bg = 'NONE' } },
+  { ['TelescopePromptPrefix'] = { fg = c.cyan, bg = 'NONE' } },
+  { ['TelescopeResultsTitle'] = { fg = c.orange, bg = 'NONE' } },
+  { ['TelescopePreviewTitle'] = { fg = c.orange, bg = 'NONE' } },
+  { ['TelescopePromptCounter'] = { fg = c.red, bg = 'NONE' } },
+  { ['TelescopePreviewHyphen'] = { fg = c.red, bg = 'NONE' } },
 
   -- NvimTree
-  hl('NvimTreeFolderIcon', { fg = c.fg, bg = 'NONE' })
-  hl('NvimTreeIndentMarker', { fg = c.light_gray, bg = 'NONE' })
-  hl('NvimTreeNormal', { fg = c.fg, bg = c.alt_bg })
-  hl('NvimTreeVertSplit', { fg = c.alt_bg, bg = c.alt_bg })
-  hl('NvimTreeFolderName', { fg = c.fg, bg = 'NONE' })
-  hl('NvimTreeOpenedFolderName', { fg = c.fg, bg = 'NONE', bold = true, italic = true })
-  hl('NvimTreeEmptyFolderName', { fg = c.gray, bg = 'NONE', italic = true })
-  hl('NvimTreeGitIgnored', { fg = c.gray, bg = 'NONE', italic = true })
-  hl('NvimTreeImageFile', { fg = c.light_gray, bg = 'NONE' })
-  hl('NvimTreeSpecialFile', { fg = c.orange, bg = 'NONE' })
-  hl('NvimTreeEndOfBuffer', { fg = c.alt_bg, bg = 'NONE' })
-  hl('NvimTreeCursorLine', { fg = 'NONE', bg = c.dark_gray })
-  hl('NvimTreeGitStaged', { fg = c.sign_add_alt, bg = 'NONE' })
-  hl('NvimTreeGitNew', { fg = c.sign_add_alt, bg = 'NONE' })
-  hl('NvimTreeGitRenamed', { fg = c.sign_add_alt, bg = 'NONE' })
-  hl('NvimTreeGitDeleted', { fg = c.sign_delete, bg = 'NONE' })
-  hl('NvimTreeGitMerge', { fg = c.sign_change_alt, bg = 'NONE' })
-  hl('NvimTreeGitDirty', { fg = c.sign_change_alt, bg = 'NONE' })
-  hl('NvimTreeSymlink', { fg = c.cyan, bg = 'NONE' })
-  hl('NvimTreeRootFolder', { fg = c.fg, bg = 'NONE', bold = true })
-  hl('NvimTreeExecFile', { fg = '#9FBA89', bg = 'NONE' })
+  { ['NvimTreeFolderIcon'] = { fg = c.fg, bg = 'NONE' } },
+  { ['NvimTreeIndentMarker'] = { fg = c.light_gray, bg = 'NONE' } },
+  { ['NvimTreeNormal'] = { fg = c.fg, bg = c.alt_bg } },
+  { ['NvimTreeVertSplit'] = { fg = c.alt_bg, bg = c.alt_bg } },
+  { ['NvimTreeFolderName'] = { fg = c.fg, bg = 'NONE' } },
+  { ['NvimTreeOpenedFolderName'] = { fg = c.fg, bg = 'NONE', bold = true, italic = true } },
+  { ['NvimTreeEmptyFolderName'] = { fg = c.gray, bg = 'NONE', italic = true } },
+  { ['NvimTreeGitIgnored'] = { fg = c.gray, bg = 'NONE', italic = true } },
+  { ['NvimTreeImageFile'] = { fg = c.light_gray, bg = 'NONE' } },
+  { ['NvimTreeSpecialFile'] = { fg = c.orange, bg = 'NONE' } },
+  { ['NvimTreeEndOfBuffer'] = { fg = c.alt_bg, bg = 'NONE' } },
+  { ['NvimTreeCursorLine'] = { fg = 'NONE', bg = c.dark_gray } },
+  { ['NvimTreeGitStaged'] = { fg = c.sign_add_alt, bg = 'NONE' } },
+  { ['NvimTreeGitNew'] = { fg = c.sign_add_alt, bg = 'NONE' } },
+  { ['NvimTreeGitRenamed'] = { fg = c.sign_add_alt, bg = 'NONE' } },
+  { ['NvimTreeGitDeleted'] = { fg = c.sign_delete, bg = 'NONE' } },
+  { ['NvimTreeGitMerge'] = { fg = c.sign_change_alt, bg = 'NONE' } },
+  { ['NvimTreeGitDirty'] = { fg = c.sign_change_alt, bg = 'NONE' } },
+  { ['NvimTreeSymlink'] = { fg = c.cyan, bg = 'NONE' } },
+  { ['NvimTreeRootFolder'] = { fg = c.fg, bg = 'NONE', bold = true } },
+  { ['NvimTreeExecFile'] = { fg = '#9FBA89', bg = 'NONE' } },
 
   -- NeoTree
-  hl('NeoTreeFolderIcon', { fg = c.fg, bg = 'NONE' })
-  hl('NeoTreeIndentMarker', { fg = c.gray, bg = 'NONE' })
-  hl('NeoTreeNormal', { fg = c.fg, bg = c.alt_bg })
-  hl('NeoTreeVertSplit', { fg = c.alt_bg, bg = c.alt_bg })
-  hl('NeoTreeWinSeparator', { fg = c.alt_bg, bg = c.alt_bg })
-  hl('NeoTreeDirectoryName', { fg = c.fg, bg = 'NONE' })
-  hl('NeoTreeDirectoryIcon', { fg = c.fg, bg = 'NONE' })
-  hl('NeoTreeFileName', { fg = c.light_gray, bg = 'NONE' })
-  hl('NeoTreeOpenedFolderName', { fg = c.fg, bg = 'NONE', bold = true, italic = true })
-  hl('NeoTreeEmptyFolderName', { fg = c.gray, bg = 'NONE', italic = true })
-  hl('NeoTreeGitIgnored', { fg = c.gray, bg = 'NONE', italic = true })
-  hl('NeoTreeDotfile', { fg = c.gray, bg = 'NONE', italic = true })
-  hl('NeoTreeHiddenByName', { fg = c.gray, bg = 'NONE', italic = true })
-  hl('NeoTreeEndOfBuffer', { fg = c.alt_bg, bg = 'NONE' })
-  hl('NeoTreeCursorLine', { fg = 'NONE', bg = c.dark_gray })
-  hl('NeoTreeGitStaged', { fg = c.sign_add_alt, bg = 'NONE' })
-  hl('NeoTreeGitUntracked', { fg = c.sign_add_alt, bg = 'NONE' })
-  hl('NeoTreeGitDeleted', { fg = c.sign_delete, bg = 'NONE' })
-  hl('NeoTreeGitModified', { fg = c.sign_change_alt, bg = 'NONE' })
-  hl('NeoTreeSymbolicLinkTarget', { fg = c.cyan, bg = 'NONE' })
-  hl('NeoTreeRootName', { fg = c.fg, bg = 'NONE', bold = true })
-  hl('NeoTreeTitleBar', { fg = c.dark_gray, bg = c.fg, bold = true })
-
-  -- Lir
-  hl('LirFloatNormal', { fg = c.fg, bg = c.alt_bg })
-  hl('LirDir', { link = 'Directory' })
-  hl('LirSymLink', { fg = c.cyan, bg = 'NONE' })
-  hl('LirEmptyDirText', { fg = c.gray, bg = 'NONE', italic = true })
+  { ['NeoTreeFolderIcon'] = { fg = c.fg, bg = 'NONE' } },
+  { ['NeoTreeIndentMarker'] = { fg = c.gray, bg = 'NONE' } },
+  { ['NeoTreeNormal'] = { fg = c.fg, bg = c.alt_bg } },
+  { ['NeoTreeVertSplit'] = { fg = c.alt_bg, bg = c.alt_bg } },
+  { ['NeoTreeWinSeparator'] = { fg = c.alt_bg, bg = c.alt_bg } },
+  { ['NeoTreeDirectoryName'] = { fg = c.fg, bg = 'NONE' } },
+  { ['NeoTreeDirectoryIcon'] = { fg = c.fg, bg = 'NONE' } },
+  { ['NeoTreeFileName'] = { fg = c.light_gray, bg = 'NONE' } },
+  { ['NeoTreeOpenedFolderName'] = { fg = c.fg, bg = 'NONE', bold = true, italic = true } },
+  { ['NeoTreeEmptyFolderName'] = { fg = c.gray, bg = 'NONE', italic = true } },
+  { ['NeoTreeGitIgnored'] = { fg = c.gray, bg = 'NONE', italic = true } },
+  { ['NeoTreeDotfile'] = { fg = c.gray, bg = 'NONE', italic = true } },
+  { ['NeoTreeHiddenByName'] = { fg = c.gray, bg = 'NONE', italic = true } },
+  { ['NeoTreeEndOfBuffer'] = { fg = c.alt_bg, bg = 'NONE' } },
+  { ['NeoTreeCursorLine'] = { fg = 'NONE', bg = c.dark_gray } },
+  { ['NeoTreeGitStaged'] = { fg = c.sign_add_alt, bg = 'NONE' } },
+  { ['NeoTreeGitUntracked'] = { fg = c.sign_add_alt, bg = 'NONE' } },
+  { ['NeoTreeGitDeleted'] = { fg = c.sign_delete, bg = 'NONE' } },
+  { ['NeoTreeGitModified'] = { fg = c.sign_change_alt, bg = 'NONE' } },
+  { ['NeoTreeSymbolicLinkTarget'] = { fg = c.cyan, bg = 'NONE' } },
+  { ['NeoTreeRootName'] = { fg = c.fg, bg = 'NONE', bold = true } },
+  { ['NeoTreeTitleBar'] = { fg = c.dark_gray, bg = c.fg, bold = true } },
 
   -- Buffer
-  hl('BufferCurrent', { fg = c.fg, bg = c.bg })
-  hl('BufferCurrentIndex', { fg = c.fg, bg = c.bg })
-  hl('BufferCurrentMod', { fg = c.info, bg = c.bg })
-  hl('BufferCurrentSign', { fg = c.hint, bg = c.bg })
-  hl('BufferCurrentTarget', { fg = c.red, bg = c.bg, bold = true })
-  hl('BufferVisible', { fg = c.fg, bg = c.bg })
-  hl('BufferVisibleIndex', { fg = c.fg, bg = c.bg })
-  hl('BufferVisibleMod', { fg = c.info, bg = c.bg })
-  hl('BufferVisibleSign', { fg = c.gray, bg = c.bg })
-  hl('BufferVisibleTarget', { fg = c.red, bg = c.bg, bold = true })
-  hl('BufferInactive', { fg = c.gray, bg = c.alt_bg })
-  hl('BufferInactiveIndex', { fg = c.gray, bg = c.alt_bg })
-  hl('BufferInactiveMod', { fg = c.info, bg = c.alt_bg })
-  hl('BufferInactiveSign', { fg = c.gray, bg = c.alt_bg })
-  hl('BufferInactiveTarget', { fg = c.red, bg = c.alt_bg, bold = true })
+  { ['BufferCurrent'] = { fg = c.fg, bg = c.bg } },
+  { ['BufferCurrentIndex'] = { fg = c.fg, bg = c.bg } },
+  { ['BufferCurrentMod'] = { fg = c.info, bg = c.bg } },
+  { ['BufferCurrentSign'] = { fg = c.hint, bg = c.bg } },
+  { ['BufferCurrentTarget'] = { fg = c.red, bg = c.bg, bold = true } },
+  { ['BufferVisible'] = { fg = c.fg, bg = c.bg } },
+  { ['BufferVisibleIndex'] = { fg = c.fg, bg = c.bg } },
+  { ['BufferVisibleMod'] = { fg = c.info, bg = c.bg } },
+  { ['BufferVisibleSign'] = { fg = c.gray, bg = c.bg } },
+  { ['BufferVisibleTarget'] = { fg = c.red, bg = c.bg, bold = true } },
+  { ['BufferInactive'] = { fg = c.gray, bg = c.alt_bg } },
+  { ['BufferInactiveIndex'] = { fg = c.gray, bg = c.alt_bg } },
+  { ['BufferInactiveMod'] = { fg = c.info, bg = c.alt_bg } },
+  { ['BufferInactiveSign'] = { fg = c.gray, bg = c.alt_bg } },
+  { ['BufferInactiveTarget'] = { fg = c.red, bg = c.alt_bg, bold = true } },
 
   -- StatusLine
-  hl('StatusLine', { fg = c.context, bg = c.bg })
-  hl('StatusLineNC', { fg = c.line, bg = c.bg })
-  hl('StatusLineSeparator', { fg = c.line, bg = 'NONE' })
-  hl('StatusLineTerm', { fg = c.line, bg = 'NONE' })
-  hl('StatusLineTermNC', { fg = c.line, bg = 'NONE' })
+  { ['StatusLine'] = { fg = c.context, bg = c.bg } },
+  { ['StatusLineNC'] = { fg = c.line, bg = c.bg } },
+  { ['StatusLineSeparator'] = { fg = c.line, bg = 'NONE' } },
+  { ['StatusLineTerm'] = { fg = c.line, bg = 'NONE' } },
+  { ['StatusLineTermNC'] = { fg = c.line, bg = 'NONE' } },
 
   -- IndentBlankline
-  hl('IndentBlanklineContextChar', { fg = c.context, bg = 'NONE' })
-  hl('IndentBlanklineContextStart', { fg = 'NONE', bg = 'NONE', underline = true })
-  hl('IndentBlanklineChar', { fg = c.gray, bg = 'NONE' })
+  { ['IndentBlanklineContextChar'] = { fg = c.context, bg = 'NONE' } },
+  { ['IndentBlanklineContextStart'] = { fg = 'NONE', bg = 'NONE', underline = true } },
+  { ['IndentBlanklineChar'] = { fg = c.gray, bg = 'NONE' } },
 
   -- Cmp
-  hl('CmpItemAbbrDeprecated', { fg = c.gray, bg = 'NONE', strikethrough = true })
-  hl('CmpItemAbbrMatch', { fg = c.ui3_blue, bg = 'NONE' })
-  hl('CmpItemAbbrMatchFuzzy', { fg = c.ui3_blue, bg = 'NONE' })
-  hl('CmpItemKindFunction', { fg = c.cyan, bg = 'NONE' })
-  hl('CmpItemKindMethod', { fg = c.cyan, bg = 'NONE' })
-  hl('CmpItemKindConstructor', { fg = c.yellow, bg = 'NONE' })
-  hl('CmpItemKindClass', { fg = c.yellow, bg = 'NONE' })
-  hl('CmpItemKindEnum', { fg = c.yellow, bg = 'NONE' })
-  hl('CmpItemKindEvent', { fg = c.red, bg = 'NONE' })
-  hl('CmpItemKindInterface', { fg = c.yellow, bg = 'NONE' })
-  hl('CmpItemKindStruct', { fg = c.yellow, bg = 'NONE' })
-  hl('CmpItemKindVariable', { fg = c.red, bg = 'NONE' })
-  hl('CmpItemKindField', { fg = c.red, bg = 'NONE' })
-  hl('CmpItemKindProperty', { fg = c.red, bg = 'NONE' })
-  hl('CmpItemKindEnumMember', { fg = c.orange, bg = 'NONE' })
-  hl('CmpItemKindConstant', { fg = c.orange, bg = 'NONE' })
-  hl('CmpItemKindKeyword', { fg = c.purple, bg = 'NONE' })
-  hl('CmpItemKindModule', { fg = c.yelloworange, bg = 'NONE' })
-  hl('CmpItemKindValue', { fg = c.fg, bg = 'NONE' })
-  hl('CmpItemKindUnit', { fg = c.fg, bg = 'NONE' })
-  hl('CmpItemKindText', { fg = c.fg, bg = 'NONE' })
-  hl('CmpItemKindSnippet', { fg = c.purple, bg = 'NONE' })
-  hl('CmpItemKindFile', { fg = c.fg, bg = 'NONE' })
-  hl('CmpItemKindFolder', { fg = c.fg, bg = 'NONE' })
-  hl('CmpItemKindColor', { fg = c.fg, bg = 'NONE' })
-  hl('CmpItemKindReference', { fg = c.fg, bg = 'NONE' })
-  hl('CmpItemKindOperator', { fg = c.fg, bg = 'NONE' })
-  hl('CmpItemKindTypeParameter', { fg = c.red, bg = 'NONE' })
+  { ['CmpItemAbbrDeprecated'] = { fg = c.gray, bg = 'NONE', strikethrough = true } },
+  { ['CmpItemAbbrMatch'] = { fg = c.ui3_blue, bg = 'NONE' } },
+  { ['CmpItemAbbrMatchFuzzy'] = { fg = c.ui3_blue, bg = 'NONE' } },
+  { ['CmpItemKindFunction'] = { fg = c.cyan, bg = 'NONE' } },
+  { ['CmpItemKindMethod'] = { fg = c.cyan, bg = 'NONE' } },
+  { ['CmpItemKindConstructor'] = { fg = c.yellow, bg = 'NONE' } },
+  { ['CmpItemKindClass'] = { fg = c.yellow, bg = 'NONE' } },
+  { ['CmpItemKindEnum'] = { fg = c.yellow, bg = 'NONE' } },
+  { ['CmpItemKindEvent'] = { fg = c.red, bg = 'NONE' } },
+  { ['CmpItemKindInterface'] = { fg = c.yellow, bg = 'NONE' } },
+  { ['CmpItemKindStruct'] = { fg = c.yellow, bg = 'NONE' } },
+  { ['CmpItemKindVariable'] = { fg = c.red, bg = 'NONE' } },
+  { ['CmpItemKindField'] = { fg = c.red, bg = 'NONE' } },
+  { ['CmpItemKindProperty'] = { fg = c.red, bg = 'NONE' } },
+  { ['CmpItemKindEnumMember'] = { fg = c.orange, bg = 'NONE' } },
+  { ['CmpItemKindConstant'] = { fg = c.orange, bg = 'NONE' } },
+  { ['CmpItemKindKeyword'] = { fg = c.purple, bg = 'NONE' } },
+  { ['CmpItemKindModule'] = { fg = c.yelloworange, bg = 'NONE' } },
+  { ['CmpItemKindValue'] = { fg = c.fg, bg = 'NONE' } },
+  { ['CmpItemKindUnit'] = { fg = c.fg, bg = 'NONE' } },
+  { ['CmpItemKindText'] = { fg = c.fg, bg = 'NONE' } },
+  { ['CmpItemKindSnippet'] = { fg = c.purple, bg = 'NONE' } },
+  { ['CmpItemKindFile'] = { fg = c.fg, bg = 'NONE' } },
+  { ['CmpItemKindFolder'] = { fg = c.fg, bg = 'NONE' } },
+  { ['CmpItemKindColor'] = { fg = c.fg, bg = 'NONE' } },
+  { ['CmpItemKindReference'] = { fg = c.fg, bg = 'NONE' } },
+  { ['CmpItemKindOperator'] = { fg = c.fg, bg = 'NONE' } },
+  { ['CmpItemKindTypeParameter'] = { fg = c.red, bg = 'NONE' } },
 
   -- Navic
-  hl('NavicIconsFile', { fg = c.fg, bg = 'NONE' })
-  hl('NavicIconsModule', { fg = c.yelloworange, bg = 'NONE' })
-  hl('NavicIconsNamespace', { fg = c.fg, bg = 'NONE' })
-  hl('NavicIconsPackage', { fg = c.fg, bg = 'NONE' })
-  hl('NavicIconsClass', { fg = c.yellow, bg = 'NONE' })
-  hl('NavicIconsMethod', { fg = c.cyan, bg = 'NONE' })
-  hl('NavicIconsProperty', { fg = c.red, bg = 'NONE' })
-  hl('NavicIconsField', { fg = c.red, bg = 'NONE' })
-  hl('NavicIconsConstructor', { fg = c.yellow, bg = 'NONE' })
-  hl('NavicIconsEnum', { fg = c.orange, bg = 'NONE' })
-  hl('NavicIconsInterface', { fg = c.yellow, bg = 'NONE' })
-  hl('NavicIconsFunction', { fg = c.cyan, bg = 'NONE' })
-  hl('NavicIconsVariable', { fg = c.red, bg = 'NONE' })
-  hl('NavicIconsConstant', { fg = c.orange, bg = 'NONE' })
-  hl('NavicIconsString', { fg = c.yelloworange, bg = 'NONE' })
-  hl('NavicIconsNumber', { fg = c.orange, bg = 'NONE' })
-  hl('NavicIconsBoolean', { fg = c.orange, bg = 'NONE' })
-  hl('NavicIconsArray', { fg = c.yellow, bg = 'NONE' })
-  hl('NavicIconsObject', { fg = c.yellow, bg = 'NONE' })
-  hl('NavicIconsKey', { fg = c.purple, bg = 'NONE' })
-  hl('NavicIconsKeyword', { fg = c.purple, bg = 'NONE' })
-  hl('NavicIconsNull', { fg = c.orange, bg = 'NONE' })
-  hl('NavicIconsEnumMember', { fg = c.orange, bg = 'NONE' })
-  hl('NavicIconsStruct', { fg = c.cyan, bg = 'NONE' })
-  hl('NavicIconsEvent', { fg = c.yellow, bg = 'NONE' })
-  hl('NavicIconsOperator', { fg = c.fg, bg = 'NONE' })
-  hl('NavicIconsTypeParameter', { fg = c.red, bg = 'NONE' })
-  hl('NavicText', { fg = c.fg, bg = 'NONE' })
-  hl('NavicSeparator', { fg = c.fg, bg = 'NONE' })
+  { ['NavicIconsFile'] = { fg = c.fg, bg = 'NONE' } },
+  { ['NavicIconsModule'] = { fg = c.yelloworange, bg = 'NONE' } },
+  { ['NavicIconsNamespace'] = { fg = c.fg, bg = 'NONE' } },
+  { ['NavicIconsPackage'] = { fg = c.fg, bg = 'NONE' } },
+  { ['NavicIconsClass'] = { fg = c.yellow, bg = 'NONE' } },
+  { ['NavicIconsMethod'] = { fg = c.cyan, bg = 'NONE' } },
+  { ['NavicIconsProperty'] = { fg = c.red, bg = 'NONE' } },
+  { ['NavicIconsField'] = { fg = c.red, bg = 'NONE' } },
+  { ['NavicIconsConstructor'] = { fg = c.yellow, bg = 'NONE' } },
+  { ['NavicIconsEnum'] = { fg = c.orange, bg = 'NONE' } },
+  { ['NavicIconsInterface'] = { fg = c.yellow, bg = 'NONE' } },
+  { ['NavicIconsFunction'] = { fg = c.cyan, bg = 'NONE' } },
+  { ['NavicIconsVariable'] = { fg = c.red, bg = 'NONE' } },
+  { ['NavicIconsConstant'] = { fg = c.orange, bg = 'NONE' } },
+  { ['NavicIconsString'] = { fg = c.yelloworange, bg = 'NONE' } },
+  { ['NavicIconsNumber'] = { fg = c.orange, bg = 'NONE' } },
+  { ['NavicIconsBoolean'] = { fg = c.orange, bg = 'NONE' } },
+  { ['NavicIconsArray'] = { fg = c.yellow, bg = 'NONE' } },
+  { ['NavicIconsObject'] = { fg = c.yellow, bg = 'NONE' } },
+  { ['NavicIconsKey'] = { fg = c.purple, bg = 'NONE' } },
+  { ['NavicIconsKeyword'] = { fg = c.purple, bg = 'NONE' } },
+  { ['NavicIconsNull'] = { fg = c.orange, bg = 'NONE' } },
+  { ['NavicIconsEnumMember'] = { fg = c.orange, bg = 'NONE' } },
+  { ['NavicIconsStruct'] = { fg = c.cyan, bg = 'NONE' } },
+  { ['NavicIconsEvent'] = { fg = c.yellow, bg = 'NONE' } },
+  { ['NavicIconsOperator'] = { fg = c.fg, bg = 'NONE' } },
+  { ['NavicIconsTypeParameter'] = { fg = c.red, bg = 'NONE' } },
+  { ['NavicText'] = { fg = c.fg, bg = 'NONE' } },
+  { ['NavicSeparator'] = { fg = c.fg, bg = 'NONE' } },
 
   -- Packer
-  hl('packerString', { fg = c.ui_orange, bg = 'NONE' })
-  hl('packerHash', { fg = c.ui4_blue, bg = 'NONE' })
-  hl('packerOutput', { fg = c.ui_purple, bg = 'NONE' })
-  hl('packerRelDate', { fg = c.gray, bg = 'NONE' })
-  hl('packerSuccess', { fg = c.success_green, bg = 'NONE' })
-  hl('packerStatusSuccess', { fg = c.ui4_blue, bg = 'NONE' })
+  { ['packerString'] = { fg = c.ui_orange, bg = 'NONE' } },
+  { ['packerHash'] = { fg = c.ui4_blue, bg = 'NONE' } },
+  { ['packerOutput'] = { fg = c.ui_purple, bg = 'NONE' } },
+  { ['packerRelDate'] = { fg = c.gray, bg = 'NONE' } },
+  { ['packerSuccess'] = { fg = c.success_green, bg = 'NONE' } },
+  { ['packerStatusSuccess'] = { fg = c.ui4_blue, bg = 'NONE' } },
 
   -- SymbolOutline
-  hl('SymbolsOutlineConnector', { fg = c.gray, bg = 'NONE' })
-  hl('FocusedSymbol', { fg = 'NONE', bg = '#36383F' })
+  { ['SymbolsOutlineConnector'] = { fg = c.gray, bg = 'NONE' } },
+  { ['FocusedSymbol'] = { fg = 'NONE', bg = '#36383F' } },
 
   -- Notify
-  hl('NotifyERRORBorder', { fg = '#8A1F1F', bg = 'NONE' })
-  hl('NotifyWARNBorder', { fg = '#79491D', bg = 'NONE' })
-  hl('NotifyINFOBorder', { fg = c.ui_blue, bg = 'NONE' })
-  hl('NotifyDEBUGBorder', { fg = c.gray, bg = 'NONE' })
-  hl('NotifyTRACEBorder', { fg = '#4F3552', bg = 'NONE' })
-  hl('NotifyERRORIcon', { fg = c.error, bg = 'NONE' })
-  hl('NotifyWARNIcon', { fg = c.warn, bg = 'NONE' })
-  hl('NotifyINFOIcon', { fg = c.ui4_blue, bg = 'NONE' })
-  hl('NotifyDEBUGIcon', { fg = c.gray, bg = 'NONE' })
-  hl('NotifyTRACEIcon', { fg = c.ui_purple, bg = 'NONE' })
-  hl('NotifyERRORTitle', { fg = c.error, bg = 'NONE' })
-  hl('NotifyWARNTitle', { fg = c.warn, bg = 'NONE' })
-  hl('NotifyINFOTitle', { fg = c.ui4_blue, bg = 'NONE' })
-  hl('NotifyDEBUGTitle', { fg = c.gray, bg = 'NONE' })
-  hl('NotifyTRACETitle', { fg = c.ui_purple, bg = 'NONE' })
+  { ['NotifyERRORBorder'] = { fg = '#8A1F1F', bg = 'NONE' } },
+  { ['NotifyWARNBorder'] = { fg = '#79491D', bg = 'NONE' } },
+  { ['NotifyINFOBorder'] = { fg = c.ui_blue, bg = 'NONE' } },
+  { ['NotifyDEBUGBorder'] = { fg = c.gray, bg = 'NONE' } },
+  { ['NotifyTRACEBorder'] = { fg = '#4F3552', bg = 'NONE' } },
+  { ['NotifyERRORIcon'] = { fg = c.error, bg = 'NONE' } },
+  { ['NotifyWARNIcon'] = { fg = c.warn, bg = 'NONE' } },
+  { ['NotifyINFOIcon'] = { fg = c.ui4_blue, bg = 'NONE' } },
+  { ['NotifyDEBUGIcon'] = { fg = c.gray, bg = 'NONE' } },
+  { ['NotifyTRACEIcon'] = { fg = c.ui_purple, bg = 'NONE' } },
+  { ['NotifyERRORTitle'] = { fg = c.error, bg = 'NONE' } },
+  { ['NotifyWARNTitle'] = { fg = c.warn, bg = 'NONE' } },
+  { ['NotifyINFOTitle'] = { fg = c.ui4_blue, bg = 'NONE' } },
+  { ['NotifyDEBUGTitle'] = { fg = c.gray, bg = 'NONE' } },
+  { ['NotifyTRACETitle'] = { fg = c.ui_purple, bg = 'NONE' } },
 
   -- Hop
-  hl('HopNextKey', { fg = '#4ae0ff', bg = 'NONE' })
-  hl('HopNextKey1', { fg = '#d44eed', bg = 'NONE' })
-  hl('HopNextKey2', { fg = '#b42ecd', bg = 'NONE' })
-  hl('HopUnmatched', { fg = c.gray, bg = 'NONE' })
-  hl('HopPreview', { fg = '#c7ba7d', bg = 'NONE' })
+  { ['HopNextKey'] = { fg = '#4ae0ff', bg = 'NONE' } },
+  { ['HopNextKey1'] = { fg = '#d44eed', bg = 'NONE' } },
+  { ['HopNextKey2'] = { fg = '#b42ecd', bg = 'NONE' } },
+  { ['HopUnmatched'] = { fg = c.gray, bg = 'NONE' } },
+  { ['HopPreview'] = { fg = '#c7ba7d', bg = 'NONE' } },
 
   -- Crates
-  hl('CratesNvimLoading', { fg = c.hint, bg = 'NONE' })
-  hl('CratesNvimVersion', { fg = c.hint, bg = 'NONE' })
+  { ['CratesNvimLoading'] = { fg = c.hint, bg = 'NONE' } },
+  { ['CratesNvimVersion'] = { fg = c.hint, bg = 'NONE' } },
+}
+
+function M.set_highlights()
+  for _, value in ipairs(highlights) do
+    local name = next(value)
+    api.nvim_set_hl(0, name, value[name])
+  end
 end
 
 return M

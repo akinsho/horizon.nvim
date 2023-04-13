@@ -1,18 +1,18 @@
+local fn, cmd = vim.fn, vim.cmd
+
 local M = {}
-local theme = require('horizon.theme')
 
-M.setup = function()
-  vim.cmd('hi clear')
+function M.setup()
+  local o, g = vim.o, vim.g
+  cmd.highlight('clear')
 
-  vim.o.background = 'dark'
-  if vim.fn.exists('syntax_on') then
-    vim.cmd('syntax reset')
-  end
+  o.background = 'dark'
+  if fn.exists('syntax_on') then cmd.syntax('reset') end
 
-  vim.o.termguicolors = true
-  vim.g.colors_name = 'horizon'
+  o.termguicolors = true
+  g.colors_name = 'horizon'
 
-  theme.set_highlights()
+  require('horizon.theme').set_highlights()
 end
 
 return M

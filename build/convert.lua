@@ -167,9 +167,9 @@ local theme_mappings = {
     ['entity.name.tag'] = 'tag',
     ['entity.name.type'] = 'type',
     ['entity.name.variable'] = 'class_variable',
-    ['string.quoted'] = 'str',
+    ['string.quoted'] = 'string',
     ['string.regexp'] = 'regex',
-    ['variable.language'] = 'variable',
+    ['variable'] = 'variable',
     ['support.type.property-name'] = 'field',
     ['storage'] = 'storage',
     ['keyword'] = 'keyword',
@@ -205,6 +205,7 @@ end
 local function clamp(val, min, max) return math.min(max, math.max(min, val)) end
 
 ---approximate opacity to be mixing the colour with background color
+---reference: https://stackoverflow.com/a/56348573
 ---@param bg string hex colour
 ---@param target string hex colour
 ---@param alpha number hex alpha
@@ -270,8 +271,8 @@ local function convert(mode)
   end
   for scope, mapping in pairs(theme_mappings.tokenColors) do
     for _, token in ipairs(json.tokenColors) do
-      local sc = token.scope
-      if sc == scope or (type(sc) == 'table' and vim.tbl_contains(sc, token)) then
+      local current_scope = token.scope
+      if current_scope == scope or (type(current_scope) == 'table' and vim.tbl_contains(current_scope, scope)) then
         result[mapping] = parse_token_settings(token, mode)
       end
     end

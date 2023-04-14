@@ -1,6 +1,12 @@
 local colors = {
   active_line_number_fg = '#787B80',
   bg = '#1C1E26',
+  class_variable = {
+    fg = '#D4506F',
+  },
+  code_block = {
+    fg = '#DA8879',
+  },
   codelens_fg = '#44465C',
   comment = {
     fg = '#4B4D52',
@@ -16,6 +22,9 @@ local colors = {
   diff_deleted_bg = '#31212B',
   error = '#F43E5C',
   fg = '#D5D8DA',
+  field = {
+    fg = '#D4506F',
+  },
   func = {
     fg = '#24A1AD',
   },
@@ -53,12 +62,18 @@ local colors = {
   sign_added_bg = '#0EB57B',
   sign_deleted_bg = '#B3344B',
   sign_modified_bg = '#1F8E93',
+  special_keyword = {
+    fg = '#A86EC8',
+  },
   statusline_active_fg = '#2E303E',
   statusline_bg = '#1C1E26',
   statusline_fg = '#787B80',
   storage = {
     fg = '#A86EC8',
     italic = true,
+  },
+  string = {
+    fg = '#E3A789',
   },
   structure = {
     fg = '#E3B18E',
@@ -69,7 +84,16 @@ local colors = {
   },
   term_cursor_bg = '#D5D8DA',
   term_cursor_fg = '#44465C',
-  visual = '#44465C',
+  title = {
+    fg = '#D4506F',
+  },
+  type = {
+    fg = '#E3B18E',
+  },
+  variable = {
+    fg = '#D4506F',
+  },
+  visual = '#343646',
   warning = '#239F75',
   winbar = '#232530',
   winseparator_fg = '#1A1C23',

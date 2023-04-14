@@ -124,7 +124,7 @@ local function get_highlights(bg)
     -- Code
     { ['Comment'] = theme.comment },
     { ['Variable'] = { fg = c.red, bg = 'NONE' } },
-    { ['String'] = { fg = c.yelloworange, bg = 'NONE' } },
+    { ['String'] = theme.string },
     { ['Character'] = { fg = c.yelloworange, bg = 'NONE' } },
     { ['Number'] = { fg = c.orange, bg = 'NONE' } },
     { ['Float'] = { fg = c.orange, bg = 'NONE' } },
@@ -347,7 +347,7 @@ local function get_plugin_highlights(bg)
       { ['SignChange'] = { fg = theme.git_modified_fg, bg = 'NONE' } },
       { ['SignDelete'] = { fg = theme.git_deleted_fg, bg = 'NONE' } },
       { ['GitSignsAdd'] = { fg = theme.git_added_fg, bg = 'NONE' } },
-      { ['GitSignsChange'] = { fg = theme.git_modified_fg, bg = 'NONE' } },
+      { ['GitSignsChange'] = { fg = theme.git_added_fg, bg = 'NONE' } },
       { ['GitSignsDelete'] = { fg = theme.git_deleted_fg, bg = 'NONE' } },
       { ['GitSignsUntracked'] = { fg = theme.git_untracked_fg, bg = 'NONE' } },
     },

@@ -1,4 +1,5 @@
-local fn, cmd = vim.fn, vim.cmd
+local fn, api, cmd = vim.fn, vim.api, vim.cmd
+local o, g = vim.o, vim.g
 
 ---@class horizon.Plugins
 ---@field barbar boolean
@@ -45,10 +46,9 @@ local defaults = {
 ---@param config horizon.Config?
 function M.setup(config)
   config = vim.tbl_deep_extend('force', defaults, config or {})
-  local o, g = vim.o, vim.g
+
   cmd.highlight('clear')
 
-  o.background = 'dark'
   if fn.exists('syntax_on') then cmd.syntax('reset') end
 
   o.termguicolors = true

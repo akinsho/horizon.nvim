@@ -276,7 +276,8 @@ local function convert(mode)
       end
     end
   end
-  local str = fmt('local colors = %s\n\nreturn colors', vim.inspect(result, { indent = string.rep(' ', 2) }))
+  local colors = vim.inspect(result, { indent = string.rep(' ', 2) })
+  local str = fmt('local colors = %s\n\nreturn colors', colors):gsub('"', "'") -- single quote strings
   fn.writefile(vim.split(str, '\n'), ('./lua/horizon/palette-%s.lua'):format(mode))
 end
 

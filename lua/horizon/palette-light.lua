@@ -16,6 +16,9 @@ local colors = {
   diff_deleted_bg = '#FCDEDE',
   error = '#F43E5C',
   fg = '#06060C',
+  func = {
+    fg = '#1D8991',
+  },
   git_added_fg = '#60C9A0',
   git_deleted_fg = '#F43E5C',
   git_ignored_fg = '#B2A9A9',
@@ -32,16 +35,19 @@ local colors = {
     fg = '#F6661E',
   },
   match_paren = '#FBDFD8',
-  method = {
-    fg = '#1D8991',
-  },
   operator = {
     fg = '#333333',
+  },
+  parameter = {
+    italic = true,
   },
   pmenu_bg = '#FADAD1',
   pmenu_sel_bg = '#E84A72',
   pmenu_thumb_bg = '#FBDFD8',
   pmenu_thumb_fg = '#F9D1C7',
+  regex = {
+    fg = '#DC3318',
+  },
   sidebar_bg = '#FDF0ED',
   sidebar_fg = '#504C4F',
   sign_added_bg = '#50E0A9',
@@ -50,6 +56,10 @@ local colors = {
   statusline_active_fg = '#F9CBBE',
   statusline_bg = '#FDF0ED',
   statusline_fg = '#504C4F',
+  storage = {
+    fg = '#8A31B9',
+    italic = true,
+  },
   structure = {
     fg = '#F77D26',
   },

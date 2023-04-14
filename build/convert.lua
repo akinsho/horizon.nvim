@@ -1,9 +1,12 @@
 local fn, fmt = vim.fn, string.format
 
----@alias HLToken { colors: { [string]: string }, tokenColors: {settings: {foreground: string}, scope: string | string[]}[]}
+---@alias TokenColors{settings: {foreground: string}, scope: string | string[]}
+---@alias HLToken { colors: { [string]: string }, tokenColors: TokenColors[]}
 
 local current = {
   light = {
+    tagStyle = 'italic',
+    keywordStyle = 'italic',
     syntax = {
       amethyst = '#8A31B9',
       crimson = '#DA103F',
@@ -49,15 +52,17 @@ local current = {
       },
     },
     alpha = {
-      high = 'E6',
-      highMed = 'B3',
-      med = '80',
-      medLow = '4D',
-      low = '1A',
-      none = '00',
+      high = 90, -- 'E6'
+      highMed = 70, -- 'B3',
+      med = 50, -- '80',
+      medLow = 30, -- '4D'
+      low = 10, -- '1A',
+      none = 0, -- '00',
     },
   },
   dark = {
+    tagStyle = 'italic',
+    keywordStyle = 'italic',
     syntax = {
       lavender = '#B877DB',
       cranberry = '#E95678',
@@ -103,12 +108,12 @@ local current = {
       },
     },
     alpha = {
-      high = 'E6',
-      highMed = 'B3',
-      med = '80',
-      medLow = '4D',
-      low = '1A',
-      none = '00',
+      high = 90, -- 'E6'
+      highMed = 70, -- 'B3',
+      med = 50, -- '80',
+      medLow = 30, -- '4D'
+      low = 10, -- '1A',
+      none = 0, -- '00',
     },
   },
 }
@@ -177,10 +182,41 @@ local theme_mappings = {
   },
 }
 
+local function rgb_to_hex(rgb) return string.format('#%02X%02X%02X', rgb.r, rgb.g, rgb.b) end
+
+local function hex_to_rgb(hex_str)
+  -- normalise
+  local hex = '[abcdef0-9][abcdef0-9]'
+  local pat = '^#(' .. hex .. ')(' .. hex .. ')(' .. hex .. ')$'
+  hex_str = string.lower(hex_str)
+  -- convert
+  local r, g, b = string.match(hex_str, pat)
+  r, g, b = tonumber(r, 16), tonumber(g, 16), tonumber(b, 16)
+  return { r = r, g = g, b = b }
+end
+
+local function clamp(val, min, max) return math.min(max, math.max(min, val)) end
+
+---approximate opacity to be mixing the colour with background color
+---@param bg string hex colour
+---@param target string hex colour
+---@param alpha number hex alpha
+---@return string mixed hex colour
+local function mix(bg, target, alpha)
+  assert(alpha, 'must provide strength to mix')
+  alpha = clamp(alpha, 0, 100) / 100
+  local rgb1 = hex_to_rgb(bg)
+  local rgb2 = hex_to_rgb(target)
+  local r = math.floor(rgb1.r + (rgb2.r - rgb1.r) * alpha)
+  local g = math.floor(rgb1.g + (rgb2.g - rgb1.g) * alpha)
+  local b = math.floor(rgb1.b + (rgb2.b - rgb1.b) * alpha)
+  return rgb_to_hex({ r = r, g = g, b = b })
+end
+
 ---@param var string
 ---@param mode Theme
----@return string? color
----@return string? alpha
+---@return string color
+---@return number? alpha
 local function parse_variables(var, mode)
   local result = {}
   for w in var:gmatch('{{(.-)}}') do
@@ -188,7 +224,26 @@ local function parse_variables(var, mode)
     local item = vim.tbl_get(current[mode], parts[1], parts[2])
     table.insert(result, item)
   end
+  if #result == 0 then return var end
   return result[1], result[2]
+end
+
+---@param token TokenColors
+---@param mode Theme
+---@return {bg: string, fg: string, bold: boolean, italics: boolean}
+local function parse_token_settings(token, mode)
+  local hl = {}
+  for k, v in pairs(token.settings) do
+    k = ({ foreground = 'fg', background = 'bg' })[k] or k
+    local var, alpha = parse_variables(v, mode)
+    if alpha then var = mix(current[mode].ui.background, var, alpha) end
+    if k == 'fontStyle' then
+      hl[var] = true
+    else
+      hl[k] = var
+    end
+  end
+  return hl
 end
 
 ---@param mode Theme
@@ -199,19 +254,18 @@ local function convert(mode)
   local json = vim.json.decode(contents) ---@type HLToken
   local result = {}
   for color, value in pairs(json.colors) do
-    if theme_mappings.colors[color] then result[theme_mappings.colors[color]] = parse_variables(value, mode) end
+    local hl_name = theme_mappings.colors[color]
+    if hl_name then
+      local colour, alpha = parse_variables(value, mode)
+      if alpha then colour = mix(current[mode].ui.background, colour, alpha) end
+      result[hl_name] = colour
+    end
   end
   for scope, mapping in pairs(theme_mappings.tokenColors) do
     for _, token in ipairs(json.tokenColors) do
       local sc = token.scope
       if sc == scope or (type(sc) == 'table' and vim.tbl_contains(sc, token)) then
-        local hl = {}
-        for k, v in pairs(token.settings) do
-          k = k:gsub('foreground', 'fg')
-          k = k:gsub('background', 'bg')
-          hl[k] = parse_variables(v, mode)
-        end
-        result[mapping] = hl
+        result[mapping] = parse_token_settings(token, mode)
       end
     end
   end

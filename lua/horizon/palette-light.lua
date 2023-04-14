@@ -1,65 +1,68 @@
 local colors = {
-  active_line_number_fg = "#06060C",
-  bg = "#FDF0ED",
-  codelens_fg = "#F9CEC3",
+  active_line_number_fg = '#817B7C',
+  bg = '#FDF0ED',
+  codelens_fg = '#FBDFD8',
   comment = {
-    fg = "#333333"
+    fg = '#989190',
+    italic = true,
   },
   constant = {
-    fg = "#DC3318"
+    fg = '#DC3318',
   },
-  cursor_bg = "#E84A72",
-  cursor_fg = "#FDF0ED",
-  cursorline_bg = "#F9CBBE",
-  diff_added_bg = "#07DA8C",
-  diff_deleted_bg = "#F43E5C",
-  error = "#F43E5C",
-  fg = "#06060C",
-  git_added_fg = "#1EB980",
-  git_deleted_fg = "#F43E5C",
-  git_ignored_fg = "#06060C",
-  git_modified_fg = "#AF5427",
-  git_untracked_fg = "#1EB980",
-  inactive_line_number_fg = "#06060C",
-  indent_guide_active_fg = "#F9CBBE",
-  indent_guide_fg = "#F9CBBE",
+  cursor_bg = '#E84A72',
+  cursor_fg = '#FDF0ED',
+  cursorline_bg = '#FBE4DE',
+  diff_added_bg = '#E4EDE3',
+  diff_deleted_bg = '#FCDEDE',
+  error = '#F43E5C',
+  fg = '#06060C',
+  git_added_fg = '#60C9A0',
+  git_deleted_fg = '#F43E5C',
+  git_ignored_fg = '#B2A9A9',
+  git_modified_fg = '#AF5427',
+  git_untracked_fg = '#1EB980',
+  inactive_line_number_fg = '#E4D8D6',
+  indent_guide_active_fg = '#F9CBBE',
+  indent_guide_fg = '#FBDDD5',
   keyword = {
-    fg = "#8A31B9"
+    fg = '#8A31B9',
+    italic = true,
   },
   link = {
-    fg = "#F6661E"
+    fg = '#F6661E',
   },
-  match_paren = "#F9CEC3",
+  match_paren = '#FBDFD8',
   method = {
-    fg = "#1D8991"
+    fg = '#1D8991',
   },
   operator = {
-    fg = "#333333"
+    fg = '#333333',
   },
-  pmenu_bg = "#FADAD1",
-  pmenu_sel_bg = "#E84A72",
-  pmenu_thumb_bg = "#F9CEC3",
-  pmenu_thumb_fg = "#F9CEC3",
-  sidebar_bg = "#FDF0ED",
-  sidebar_fg = "#06060C",
-  sign_added_bg = "#07DA8C",
-  sign_deleted_bg = "#F43E5C",
-  sign_modified_bg = "#1EAEAE",
-  statusline_active_fg = "#F9CBBE",
-  statusline_bg = "#FDF0ED",
-  statusline_fg = "#06060C",
+  pmenu_bg = '#FADAD1',
+  pmenu_sel_bg = '#E84A72',
+  pmenu_thumb_bg = '#FBDFD8',
+  pmenu_thumb_fg = '#F9D1C7',
+  sidebar_bg = '#FDF0ED',
+  sidebar_fg = '#504C4F',
+  sign_added_bg = '#50E0A9',
+  sign_deleted_bg = '#F67387',
+  sign_modified_bg = '#60C1C0',
+  statusline_active_fg = '#F9CBBE',
+  statusline_bg = '#FDF0ED',
+  statusline_fg = '#504C4F',
   structure = {
-    fg = "#F77D26"
+    fg = '#F77D26',
   },
   tag = {
-    fg = "#DA103F"
+    fg = '#DA103F',
+    italic = true,
   },
-  term_cursor_bg = "#06060C",
-  term_cursor_fg = "#F9CEC3",
-  visual = "#F9CEC3",
-  warning = "#1EB980",
-  winbar = "#FADAD1",
-  winseparator_fg = "#1A1C23"
+  term_cursor_bg = '#06060C',
+  term_cursor_fg = '#FAD8CF',
+  visual = '#FBDFD8',
+  warning = '#60C9A0',
+  winbar = '#FADAD1',
+  winseparator_fg = '#E6DAD8',
 }
 
 return colors

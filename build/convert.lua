@@ -2,120 +2,15 @@ local fn, fmt = vim.fn, string.format
 
 ---@alias TokenColors{settings: {foreground: string}, scope: string | string[]}
 ---@alias HLToken { colors: { [string]: string }, tokenColors: TokenColors[]}
+---@alias ColorMap {[string]: {[string]: string}}
 
-local current = {
-  light = {
-    tagStyle = 'italic',
-    keywordStyle = 'italic',
-    syntax = {
-      amethyst = '#8A31B9',
-      crimson = '#DA103F',
-      elm = '#1D8991',
-      thunderbird = '#DC3318',
-      tango = '#F6661E',
-      jaffa = '#F77D26',
-      black = '#333333',
-    },
-    ui = {
-      shadow = '#16161C',
-      border = '#1A1C23',
-      background = '#FDF0ED',
-      backgroundAlt = '#FADAD1',
-      accent = '#F9CBBE',
-      accentAlt = '#F9CEC3',
-      secondaryAccent = '#E73665',
-      secondaryAccentAlt = '#E84A72',
-      tertiaryAccent = '#AF5427',
-      positive = '#07DA8C',
-      negative = '#F43E5C',
-      warning = '#1EB980',
-      modified = '#1EAEAE',
-      lightText = '#D5D8DA',
-      darkText = '#06060C',
-    },
-    ansi = {
-      normal = {
-        blue = '#26BBD9',
-        cyan = '#59E1E3',
-        green = '#29D398',
-        magenta = '#EE64AC',
-        red = '#E95678',
-        yellow = '#FAB795',
-      },
-      bright = {
-        blue = '#3FC4DE',
-        cyan = '#6BE4E6',
-        green = '#3FDAA4',
-        magenta = '#F075B5',
-        red = '#EC6A88',
-        yellow = '#FBC3A7',
-      },
-    },
-    alpha = {
-      high = 90, -- 'E6'
-      highMed = 70, -- 'B3',
-      med = 50, -- '80',
-      medLow = 30, -- '4D'
-      low = 10, -- '1A',
-      none = 0, -- '00',
-    },
-  },
-  dark = {
-    tagStyle = 'italic',
-    keywordStyle = 'italic',
-    syntax = {
-      lavender = '#B877DB',
-      cranberry = '#E95678',
-      turquoise = '#25B0BC',
-      apricot = '#F09483',
-      rosebud = '#FAB795',
-      tacao = '#FAC29A',
-      gray = '#BBBBBB',
-    },
-    ui = {
-      shadow = '#16161C',
-      border = '#1A1C23',
-      background = '#1C1E26',
-      backgroundAlt = '#232530',
-      accent = '#2E303E',
-      accentAlt = '#6C6F93',
-      secondaryAccent = '#E9436D',
-      secondaryAccentAlt = '#E95378',
-      tertiaryAccent = '#FAB38E',
-      positive = '#09F7A0',
-      negative = '#F43E5C',
-      warning = '#27D797',
-      modified = '#21BFC2',
-      lightText = '#D5D8DA',
-      darkText = '#06060C',
-    },
-    ansi = {
-      normal = {
-        blue = '#26BBD9',
-        cyan = '#59E1E3',
-        green = '#29D398',
-        magenta = '#EE64AC',
-        red = '#E95678',
-        yellow = '#FAB795',
-      },
-      bright = {
-        blue = '#3FC4DE',
-        cyan = '#6BE4E6',
-        green = '#3FDAA4',
-        magenta = '#F075B5',
-        red = '#EC6A88',
-        yellow = '#FBC3A7',
-      },
-    },
-    alpha = {
-      high = 90, -- 'E6'
-      highMed = 70, -- 'B3',
-      med = 50, -- '80',
-      medLow = 30, -- '4D'
-      low = 10, -- '1A',
-      none = 0, -- '00',
-    },
-  },
+local alpha_map = {
+  ['E6'] = 90, -- 'high'
+  ['B3'] = 70, -- 'highMed',
+  ['80'] = 50, -- 'med',
+  ['4D'] = 30, -- 'medLow'
+  ['1A'] = 10, -- 'low',
+  ['00'] = 0, -- 'none',
 }
 
 local theme_mappings = {
@@ -208,9 +103,10 @@ local function clamp(val, min, max) return math.min(max, math.max(min, val)) end
 ---reference: https://stackoverflow.com/a/56348573
 ---@param bg string hex colour
 ---@param target string hex colour
----@param alpha number hex alpha
+---@param alpha_hex string hex alpha
 ---@return string mixed hex colour
-local function mix(bg, target, alpha)
+local function mix(bg, target, alpha_hex)
+  local alpha = alpha_map[alpha_hex]
   assert(alpha, 'must provide strength to mix')
   alpha = clamp(alpha, 0, 100) / 100
   local rgb1 = hex_to_rgb(bg)
@@ -222,14 +118,14 @@ local function mix(bg, target, alpha)
 end
 
 ---@param var string
----@param mode Theme
+---@param colors ColorMap
 ---@return string color
----@return number? alpha
-local function parse_variables(var, mode)
+---@return string? alpha
+local function parse_variables(var, colors)
   local result = {}
   for w in var:gmatch('{{(.-)}}') do
     local parts = vim.split((vim.trim(w)), '%.')
-    local item = vim.tbl_get(current[mode], parts[1], parts[2])
+    local item = vim.tbl_get(colors, parts[1], parts[2])
     table.insert(result, item)
   end
   if #result == 0 then return var end
@@ -237,14 +133,14 @@ local function parse_variables(var, mode)
 end
 
 ---@param token TokenColors
----@param mode Theme
+---@param colors ColorMap
 ---@return {bg: string, fg: string, bold: boolean, italics: boolean}
-local function parse_token_settings(token, mode)
+local function parse_token_settings(token, colors)
   local hl = {}
   for k, v in pairs(token.settings) do
     k = ({ foreground = 'fg', background = 'bg' })[k] or k
-    local var, alpha = parse_variables(v, mode)
-    if alpha then var = mix(current[mode].ui.background, var, alpha) end
+    local var, alpha = parse_variables(v, colors)
+    if alpha then var = mix(colors.ui.background, var, alpha) end
     if k == 'fontStyle' then
       hl[var] = true
     else
@@ -256,29 +152,32 @@ end
 
 ---@param mode Theme
 local function convert(mode)
-  local file = io.open(('./templates/%s.json'):format(mode), 'r')
-  assert(file, 'Unable to open the json template file')
-  local contents = file:read('*a')
-  local json = vim.json.decode(contents) ---@type HLToken
+  local colors_file = io.open(('./build/%s/globals.json'):format(mode), 'r')
+  local template_file = io.open(('./build/%s/template.json'):format(mode), 'r')
+  assert(template_file, 'Unable to open the json template file')
+  assert(colors_file, 'Unable to open the json colors file')
+  local template = vim.json.decode(template_file:read('*a')) ---@type HLToken
+  local colors = vim.json.decode(colors_file:read('*a')) ---@type ColorMap
+
   local result = {}
-  for color, value in pairs(json.colors) do
+  for color, value in pairs(template.colors) do
     local hl_name = theme_mappings.colors[color]
     if hl_name then
-      local colour, alpha = parse_variables(value, mode)
-      if alpha then colour = mix(current[mode].ui.background, colour, alpha) end
+      local colour, alpha = parse_variables(value, colors)
+      if alpha then colour = mix(colors.ui.background, colour, alpha) end
       result[hl_name] = colour
     end
   end
   for scope, mapping in pairs(theme_mappings.tokenColors) do
-    for _, token in ipairs(json.tokenColors) do
+    for _, token in ipairs(template.tokenColors) do
       local current_scope = token.scope
       if current_scope == scope or (type(current_scope) == 'table' and vim.tbl_contains(current_scope, scope)) then
-        result[mapping] = parse_token_settings(token, mode)
+        result[mapping] = parse_token_settings(token, colors)
       end
     end
   end
-  local colors = vim.inspect(result, { indent = string.rep(' ', 2) })
-  local str = fmt('local colors = %s\n\nreturn colors', colors):gsub('"', "'") -- single quote strings
+  local colors_map = vim.inspect(result, { indent = string.rep(' ', 2) })
+  local str = fmt('local colors = %s\n\nreturn colors', colors_map):gsub('"', "'") -- single quote strings
   fn.writefile(vim.split(str, '\n'), ('./lua/horizon/palette-%s.lua'):format(mode))
 end
 

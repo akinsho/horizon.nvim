@@ -42,7 +42,7 @@ local colors = {
     italic = true,
   },
   pmenu_bg = '#FADAD1',
-  pmenu_sel_bg = '#E84A72',
+  pmenu_item_sel_fg = '#E84A72',
   pmenu_thumb_bg = '#FBDFD8',
   pmenu_thumb_fg = '#F9D1C7',
   regex = {
@@ -69,7 +69,7 @@ local colors = {
   },
   term_cursor_bg = '#06060C',
   term_cursor_fg = '#FAD8CF',
-  visual = '#FBDFD8',
+  visual = '#D6A28A',
   warning = '#60C9A0',
   winbar = '#FADAD1',
   winseparator_fg = '#E6DAD8',

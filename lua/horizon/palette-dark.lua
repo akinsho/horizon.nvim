@@ -8,8 +8,8 @@ local colors = {
   constant = {
     fg = '#F09483',
   },
-  cursor_bg = '#1C1E26',
-  cursor_fg = '#E95378',
+  cursor_bg = '#E95378',
+  cursor_fg = '#1C1E26',
   cursorline_bg = '#2E303E',
   diff_added_bg = '#09F7A0',
   diff_deleted_bg = '#F43E5C',

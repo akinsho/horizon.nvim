@@ -8,8 +8,8 @@ local colors = {
   constant = {
     fg = "#DC3318"
   },
-  cursor_bg = "#FDF0ED",
-  cursor_fg = "#E84A72",
+  cursor_bg = "#E84A72",
+  cursor_fg = "#FDF0ED",
   cursorline_bg = "#F9CBBE",
   diff_added_bg = "#07DA8C",
   diff_deleted_bg = "#F43E5C",
@@ -56,7 +56,7 @@ local colors = {
   },
   term_cursor_bg = "#06060C",
   term_cursor_fg = "#F9CEC3",
-  visual = "#AF5427",
+  visual = "#F9CEC3",
   warning = "#1EB980",
   winbar = "#FADAD1",
   winseparator_fg = "#1A1C23"

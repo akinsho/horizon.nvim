@@ -4,6 +4,12 @@
 
 A neovim implementation of the Horizon theme.
 
+## Screenshots
+
+<img width="1308" alt="image" src="https://user-images.githubusercontent.com/22454918/232234513-1ff99bb1-7c00-433b-b061-060e9ec1fe78.png">
+
+<img width="1201" alt="image" src="https://user-images.githubusercontent.com/22454918/232234444-bd68f424-c6da-4584-aff6-5526954da494.png">
+
 ## Installation
 
 ```lua
@@ -51,10 +57,6 @@ Currently supported plugins are:
 - hop
 - navic
 - quickscope
-
-## Screenshots
-
-<img width="2560" alt="first screenshot" src="https://user-images.githubusercontent.com/22454918/231746696-e56fcfa1-a788-41c7-836e-219589c5a1e6.png">
 
 ## Credit & References
 

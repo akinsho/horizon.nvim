@@ -5,15 +5,6 @@ local fn, fmt = vim.fn, string.format
 ---@alias ColorMap {[string]: {[string]: string}}
 ---@alias ParsedFiles {template: HLToken, overrides:  HLToken, colors: ColorMap}
 
-local alpha_map = {
-  ['E6'] = 90, -- 'high'
-  ['B3'] = 70, -- 'highMed',
-  ['80'] = 50, -- 'med',
-  ['4D'] = 30, -- 'medLow'
-  ['1A'] = 10, -- 'low',
-  ['00'] = 0, -- 'none',
-}
-
 local theme_mappings = {
   colors = {
     ['statusBar.foreground'] = 'statusline_fg',
@@ -89,37 +80,33 @@ local theme_mappings = {
   },
 }
 
-local function rgb_to_hex(rgb) return string.format('#%02X%02X%02X', rgb.r, rgb.g, rgb.b) end
-
 local function hex_to_rgb(hex_str)
-  -- normalise
   local hex = '[abcdef0-9][abcdef0-9]'
   local pat = '^#(' .. hex .. ')(' .. hex .. ')(' .. hex .. ')$'
   hex_str = string.lower(hex_str)
-  -- convert
-  local r, g, b = string.match(hex_str, pat)
-  r, g, b = tonumber(r, 16), tonumber(g, 16), tonumber(b, 16)
-  return { r = r, g = g, b = b }
+  assert(string.find(hex_str, pat) ~= nil, 'hex_to_rgb: invalid hex_str: ' .. tostring(hex_str))
+  local red, green, blue = string.match(hex_str, pat)
+  return { tonumber(red, 16), tonumber(green, 16), tonumber(blue, 16) }
 end
 
-local function clamp(val, min, max) return math.min(max, math.max(min, val)) end
-
 ---approximate opacity to be mixing the colour with background color
----reference: https://stackoverflow.com/a/56348573
+---references:
+--- - https://stackoverflow.com/a/56348573
+--- - https://github.com/zbirenbaum/neodim/blob/ba5dfa830b41fabab251f7a2b97d5d14a2208c8b/lua/neodim/util.lua
 ---@param bg string hex colour
----@param target string hex colour
+---@param fg string hex colour
 ---@param alpha_hex string hex alpha
 ---@return string mixed hex colour
-local function mix(bg, target, alpha_hex)
-  local alpha = alpha_map[alpha_hex]
+local function blend(bg, fg, alpha_hex)
+  local alpha = (math.floor(tonumber(alpha_hex, 16) / 255 * 100)) / 100
   assert(alpha, 'must provide strength to mix')
-  alpha = clamp(alpha, 0, 100) / 100
-  local rgb1 = hex_to_rgb(bg)
-  local rgb2 = hex_to_rgb(target)
-  local r = math.floor(rgb1.r + (rgb2.r - rgb1.r) * alpha)
-  local g = math.floor(rgb1.g + (rgb2.g - rgb1.g) * alpha)
-  local b = math.floor(rgb1.b + (rgb2.b - rgb1.b) * alpha)
-  return rgb_to_hex({ r = r, g = g, b = b })
+  local bg_rgb = hex_to_rgb(bg)
+  local fg_rgb = hex_to_rgb(fg)
+  local blend_channel = function(i)
+    local ret = (alpha * fg_rgb[i] + ((1 - alpha) * bg_rgb[i]))
+    return math.floor(math.min(math.max(0, ret), 255) + 0.5)
+  end
+  return ('#%02X%02X%02X'):format(blend_channel(1), blend_channel(2), blend_channel(3))
 end
 
 ---@param var string
@@ -145,7 +132,7 @@ local function parse_token_settings(token, colors)
   for k, v in pairs(token.settings) do
     k = ({ foreground = 'fg', background = 'bg' })[k] or k
     local var, alpha = parse_variables(v, colors)
-    if alpha then var = mix(colors.ui.background, var, alpha) end
+    if alpha then var = blend(colors.ui.background, var, alpha) end
     if k == 'fontStyle' then
       hl[var] = true
     else
@@ -209,7 +196,7 @@ local function convert(mode)
     if hl_name then
       if type(hl_name) == 'string' then hl_name = { hl_name } end
       local colour, alpha = parse_variables(value, colors)
-      if alpha then colour = mix(colors.ui.background, colour, alpha) end
+      if alpha then colour = blend(colors.ui.background, colour, alpha) end
       for _, name in ipairs(hl_name) do
         result[name] = colour
       end

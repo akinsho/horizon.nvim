@@ -29,7 +29,9 @@ local theme_mappings = {
     ['foreground'] = 'fg',
     ['editor.background'] = 'bg',
     ['editor.lineHighlightBackground'] = 'cursorline_bg',
-    ['editorWidget.background'] = 'pmenu_bg',
+    ['editorWidget.background'] = { 'pmenu_bg', 'float_bg' },
+    ['editorWidget.foreground'] = { 'pmenu_fg', 'float_fg' },
+    ['editorWidget.border'] = 'float_border',
     ['editorSuggestWidget.highlightForeground'] = 'pmenu_item_sel_fg',
     ['scrollbarSlider.activeBackground'] = 'pmenu_thumb_fg',
     ['scrollbarSlider.background'] = 'pmenu_thumb_bg',
@@ -186,9 +188,12 @@ local function convert(mode)
   for color, value in pairs(template.colors) do
     local hl_name = theme_mappings.colors[color]
     if hl_name then
+      if type(hl_name) == 'string' then hl_name = { hl_name } end
       local colour, alpha = parse_variables(value, colors)
       if alpha then colour = mix(colors.ui.background, colour, alpha) end
-      result[hl_name] = colour
+      for _, name in ipairs(hl_name) do
+        result[name] = colour
+      end
     end
   end
   for scope, mapping in pairs(theme_mappings.tokenColors) do

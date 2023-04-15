@@ -25,6 +25,8 @@ local colors = {
   field = {
     fg = '#DA103F',
   },
+  float_bg = '#FADAD1',
+  float_border = '#FADAD1',
   func = {
     fg = '#1D8991',
   },

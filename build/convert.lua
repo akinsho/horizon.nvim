@@ -121,7 +121,9 @@ local function parse_variables(var, colors)
     table.insert(result, item)
   end
   if #result == 0 then return var end
-  return result[1], result[2]
+  local colour, alpha = result[1], result[2]
+  if alpha then return blend(colors.ui.background, colour, alpha) end
+  return colour
 end
 
 ---@param token TokenColors
@@ -131,12 +133,11 @@ local function parse_token_settings(token, colors)
   local hl = {}
   for k, v in pairs(token.settings) do
     k = ({ foreground = 'fg', background = 'bg' })[k] or k
-    local var, alpha = parse_variables(v, colors)
-    if alpha then var = blend(colors.ui.background, var, alpha) end
+    local value = parse_variables(v, colors)
     if k == 'fontStyle' then
-      hl[var] = true
+      hl[value] = true
     else
-      hl[k] = var
+      hl[k] = value
     end
   end
   return hl
@@ -195,8 +196,7 @@ local function convert(mode)
     local hl_name = theme_mappings.colors[color]
     if hl_name then
       if type(hl_name) == 'string' then hl_name = { hl_name } end
-      local colour, alpha = parse_variables(value, colors)
-      if alpha then colour = blend(colors.ui.background, colour, alpha) end
+      local colour = parse_variables(value, colors)
       for _, name in ipairs(hl_name) do
         result[name] = colour
       end
@@ -215,5 +215,6 @@ local function convert(mode)
   fn.writefile(vim.split(str, '\n'), ('./lua/horizon/palette-%s.lua'):format(mode))
 end
 
-convert('light')
-convert('dark')
+for _, mode in ipairs({ 'light', 'dark' }) do
+  convert(mode)
+end

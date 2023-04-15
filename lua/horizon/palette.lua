@@ -1,3 +1,11 @@
+-- These colours represent values not directly taken from the
+-- original theme, but are similar to/inspired by the original.
+-- they are largely used to plugin the gaps where there is no
+-- color specified for something that needs to be highlighted
+-- in the neovim context
+-- TODO: over time ideally this highlights should be added either as
+-- overrides in (overrides.json) since they do not scale to the light theme
+-- or inherited/updated from the original theme.
 local colors = {
   -- dropdown_bg = '#232530',
   -- scroll_bg = '#16161C',

@@ -1,6 +1,7 @@
 {
   "colors": {
-    "foreground": "{{ syntax.gray }}"
+    "foreground": "{{ syntax.gray }}",
+    "diffEditor.removedTextBackground": "#4A2024"
   },
   "tokenColors": [
     {

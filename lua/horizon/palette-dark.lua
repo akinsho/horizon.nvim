@@ -22,7 +22,7 @@ local colors = {
     fg = '#6C6D71',
   },
   diff_added_bg = '#1A3432',
-  diff_deleted_bg = '#32212B',
+  diff_deleted_bg = '#4A2024',
   error = '#F43E5C',
   fg = '#BBBBBB',
   field = {

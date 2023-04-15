@@ -101,7 +101,7 @@ local colors = {
   variable = {
     fg = '#D55070',
   },
-  visual = '#44475D',
+  visual = '#343647',
   warning = '#24A075',
   winbar = '#232530',
   winseparator_fg = '#1A1C23',

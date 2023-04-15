@@ -47,10 +47,8 @@ local colors = {
   orange = '#F09383',
   yelloworange = '#FAB795',
   yellow = '#FAC29A',
-  folder_blue = '#6C6F93',
-  sign_change = '#21BFC2',
-  sign_add_alt = '#27D796',
-  sign_change_alt = '#21BFC2',
+  gold = '#C09553',
+  blue = '#6C6F93',
   error = '#F43E5C',
   warn = '#FAB28E',
   info = '#27D796',
@@ -65,6 +63,10 @@ local colors = {
   ui4_blue = '#75BEFF',
   ui_orange = '#E8AB53',
   ui_purple = '#B180D7',
+
+  sign_change = '#21BFC2',
+  sign_add_alt = '#27D796',
+  sign_change_alt = '#21BFC2',
 }
 
 return colors

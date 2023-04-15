@@ -21,7 +21,7 @@ local colors = {
   diff_added_bg = '#1A3332',
   diff_deleted_bg = '#31212B',
   error = '#F43E5C',
-  fg = '#D5D8DA',
+  fg = '#BBBBBB',
   field = {
     fg = '#D4506F',
   },

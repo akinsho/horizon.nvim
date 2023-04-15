@@ -151,13 +151,36 @@ local function parse_token_settings(token, colors)
 end
 
 ---@param mode Theme
+---@return {template: HLToken, overrides:  HLToken, colors: ColorMap}
+local function read_json_files(mode)
+  local paths = {
+    dark = {
+      template = 'build/dark/template.json',
+      colors = 'build/dark/globals.json',
+      overrides = 'build/dark/overrides.json',
+    },
+    light = {
+      template = 'build/light/template.json',
+      colors = 'build/light/globals.json',
+      overrides = 'build/light/overrides.json',
+    },
+  }
+  if not paths[mode] then error('Invalid mode: ' .. mode) end
+  local result = {}
+  for name, path in pairs(paths[mode]) do
+    local file = io.open(path, 'r')
+    assert(file, 'Unable to open the json file: ' .. path)
+    local json = vim.json.decode(file:read('*a'))
+    result[name] = json
+  end
+  return result
+end
+
+---@param mode Theme
 local function convert(mode)
-  local colors_file = io.open(('./build/%s/globals.json'):format(mode), 'r')
-  local template_file = io.open(('./build/%s/template.json'):format(mode), 'r')
-  assert(template_file, 'Unable to open the json template file')
-  assert(colors_file, 'Unable to open the json colors file')
-  local template = vim.json.decode(template_file:read('*a')) ---@type HLToken
-  local colors = vim.json.decode(colors_file:read('*a')) ---@type ColorMap
+  local files = read_json_files(mode)
+  local template, colors, overrides = files.template, files.colors, files.overrides
+  if not vim.tbl_isempty(overrides.colors) then template = vim.tbl_deep_extend('force', template, overrides) end
 
   local result = {}
   for color, value in pairs(template.colors) do

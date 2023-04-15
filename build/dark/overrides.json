@@ -1,0 +1,5 @@
+{
+  "colors": {
+    "foreground": "{{ syntax.gray }}"
+  }
+}

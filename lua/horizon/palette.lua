@@ -36,7 +36,6 @@ local colors = {
   alt_fg = '#8B8D8F',
   alt_bg = '#1D1F27',
   pale_grey = '#252732',
-  line = '#1D1F27',
   gray = '#4B4C53',
   reference = '#2E303E',
   dark_gray = '#21252E',
@@ -61,7 +60,6 @@ local colors = {
   ui_blue = '#214a63',
   ui2_blue = '#042E48',
   ui4_blue = '#75BEFF',
-  ui_orange = '#E8AB53',
   ui_purple = '#B180D7',
 
   sign_change = '#21BFC2',

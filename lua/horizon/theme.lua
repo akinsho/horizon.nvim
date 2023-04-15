@@ -118,9 +118,9 @@ local function get_highlights(bg)
     ['Question'] = { fg = c.orange },
     ['EndOfBuffer'] = { fg = theme.bg },
     ['NonText'] = { fg = theme.bg },
-    ['TabLine'] = { fg = c.light_gray, bg = c.line },
-    ['TabLineSel'] = { fg = theme.fg, bg = c.line },
-    ['TabLineFill'] = { fg = c.line, bg = c.line },
+    ['TabLine'] = { fg = c.light_gray, bg = c.alt_bg },
+    ['TabLineSel'] = { fg = theme.fg, bg = c.alt_bg },
+    ['TabLineFill'] = { fg = c.alt_bg, bg = c.alt_bg },
 
     -- Code
     ['Comment'] = theme.comment,
@@ -322,10 +322,10 @@ local function get_highlights(bg)
 
     -- StatusLine
     ['StatusLine'] = { fg = theme.statusline_fg, bg = theme.statusline_bg },
-    ['StatusLineNC'] = { fg = c.line, bg = theme.bg },
-    ['StatusLineSeparator'] = { fg = c.line },
-    ['StatusLineTerm'] = { fg = c.line },
-    ['StatusLineTermNC'] = { fg = c.line },
+    ['StatusLineNC'] = { fg = c.alt_bg, bg = theme.statusline_bg },
+    ['StatusLineSeparator'] = { fg = theme.statusline_bg },
+    ['StatusLineTerm'] = { fg = theme.statusline_bg },
+    ['StatusLineTermNC'] = { fg = theme.statusline_bg },
   }
 end
 
@@ -509,7 +509,7 @@ local function get_plugin_highlights(bg)
       ['NavicSeparator'] = { fg = theme.fg },
     },
     packer = {
-      ['packerString'] = { fg = c.ui_orange },
+      ['packerString'] = { fg = c.gold },
       ['packerHash'] = { fg = c.ui4_blue },
       ['packerOutput'] = { fg = c.ui_purple },
       ['packerRelDate'] = { fg = c.gray },

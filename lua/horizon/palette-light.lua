@@ -18,6 +18,9 @@ local colors = {
   cursor_bg = '#E84A72',
   cursor_fg = '#FDF0ED',
   cursorline_bg = '#FBE4DE',
+  delimiter = {
+    fg = '#333333',
+  },
   diff_added_bg = '#E4EDE3',
   diff_deleted_bg = '#FCDEDE',
   error = '#F43E5C',
@@ -83,6 +86,9 @@ local colors = {
   tag = {
     fg = '#DA103F',
     italic = true,
+  },
+  template_delimiter = {
+    fg = '#8A31B9',
   },
   term_cursor_bg = '#06060C',
   term_cursor_fg = '#FAD8CF',

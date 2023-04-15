@@ -1,5 +1,13 @@
 {
   "colors": {
     "foreground": "{{ syntax.gray }}"
-  }
+  },
+  "tokenColors": [
+    {
+      "scope": "punctuation.separator",
+      "settings": {
+        "foreground": "{{ syntax.gray }}{{ alpha.med }}"
+      }
+    }
+  ]
 }

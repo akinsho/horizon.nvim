@@ -3,6 +3,7 @@ local fn, fmt = vim.fn, string.format
 ---@alias TokenColors{settings: {foreground: string}, scope: string | string[]}
 ---@alias HLToken { colors: { [string]: string }, tokenColors: TokenColors[]}
 ---@alias ColorMap {[string]: {[string]: string}}
+---@alias ParsedFiles {template: HLToken, overrides:  HLToken, colors: ColorMap}
 
 local alpha_map = {
   ['E6'] = 90, -- 'high'
@@ -83,6 +84,8 @@ local theme_mappings = {
     ['keyword.operator.expression'] = 'special_keyword',
     ['keyword.operator.logical'] = 'special_keyword',
     ['keyword.operator.delete'] = 'special_keyword',
+    ['punctuation.separator'] = 'delimiter',
+    ['punctuation.definition.template-expression'] = 'template_delimiter',
   },
 }
 
@@ -153,7 +156,7 @@ local function parse_token_settings(token, colors)
 end
 
 ---@param mode Theme
----@return {template: HLToken, overrides:  HLToken, colors: ColorMap}
+---@return ParsedFiles
 local function read_json_files(mode)
   local paths = {
     dark = {
@@ -178,11 +181,27 @@ local function read_json_files(mode)
   return result
 end
 
+---@param files ParsedFiles
+local function apply_overrides(files)
+  local template, colors, overrides = files.template, files.colors, files.overrides
+
+  if overrides.colors then template.colors = vim.tbl_deep_extend('force', template.colors, overrides.colors) end
+
+  if overrides.tokenColors then
+    local seen = {}
+    local function get_name(scope) return type(scope) == 'table' and table.concat(scope, ',') or scope end
+    for _, token in ipairs(overrides.tokenColors) do
+      seen[get_name(token.scope)] = token
+    end
+    template.tokenColors = vim.tbl_map(function(tk) return seen[get_name(tk.scope)] or tk end, template.tokenColors)
+  end
+  return template, colors
+end
+
 ---@param mode Theme
 local function convert(mode)
   local files = read_json_files(mode)
-  local template, colors, overrides = files.template, files.colors, files.overrides
-  if not vim.tbl_isempty(overrides.colors) then template = vim.tbl_deep_extend('force', template, overrides) end
+  local template, colors = apply_overrides(files)
 
   local result = {}
   for color, value in pairs(template.colors) do

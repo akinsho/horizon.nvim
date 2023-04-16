@@ -47,8 +47,7 @@ local theme_mappings = {
     ['editorGutter.deletedBackground'] = 'sign_deleted_bg',
     ['diffEditor.insertedTextBackground'] = 'diff_added_bg',
     ['diffEditor.removedTextBackground'] = 'diff_deleted_bg',
-    ['textLink.activeForeground'] = 'text_link_reference',
-    ['textLink.foreground'] = 'text_link',
+    ['textLink.activeForeground'] = 'external_link',
   },
   ['tokenColors'] = {
     comment = 'comment',

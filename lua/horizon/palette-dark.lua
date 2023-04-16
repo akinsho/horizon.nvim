@@ -56,6 +56,7 @@ local colors = {
   diff_added_bg = '#1A3432',
   diff_deleted_bg = '#4A2024',
   error = '#F43E5C',
+  external_link = '#E9436D',
   fg = '#BBBBBB',
   field = {
     fg = '#D55070',
@@ -124,8 +125,6 @@ local colors = {
   },
   term_cursor_bg = '#D5D8DA',
   term_cursor_fg = '#44475D',
-  text_link = '#E95378',
-  text_link_reference = '#E9436D',
   title = {
     fg = '#D55070',
   },

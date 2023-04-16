@@ -35,7 +35,7 @@ local colors = {
 
   alt_fg = '#8B8D8F',
   alt_bg = '#1D1F27',
-  pale_grey = '#252732',
+  pale_gray = '#252732',
   gray = '#4B4C53',
   reference = '#2E303E',
   dark_gray = '#21252E',

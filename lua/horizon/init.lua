@@ -17,6 +17,7 @@ local o, g = vim.o, vim.g
 ---@field whichkey boolean
 ---@field indent_blankline boolean
 ---@field cmp boolean
+---@field ts_rainbow boolean
 
 ---@class horizon.Config
 ---@field plugins horizon.Plugins
@@ -40,6 +41,7 @@ local defaults = {
     quickscope = true,
     whichkey = true,
     cmp = true,
+    ts_rainbow = true,
   },
 }
 

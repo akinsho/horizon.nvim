@@ -124,6 +124,8 @@ local colors = {
   },
   term_cursor_bg = '#D5D8DA',
   term_cursor_fg = '#44475D',
+  text_link = '#E95378',
+  text_link_reference = '#E9436D',
   title = {
     fg = '#D55070',
   },

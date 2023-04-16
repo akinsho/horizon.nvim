@@ -197,6 +197,7 @@ local palette = %s
 local colors = %s
 
 return colors, palette
+-- vim: set nomodifiable :
 ]]
 
 local function stringify(item) return vim.inspect(item, { indent = string.rep(' ', 2) }) end

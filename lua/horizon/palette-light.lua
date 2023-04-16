@@ -135,10 +135,11 @@ local colors = {
   variable = {
     fg = '#DA103F',
   },
-  visual = '#D6A28A',
+  visual = '#FBDFD8',
   warning = '#61CAA1',
   winbar = '#FADAD1',
   winseparator_fg = '#E6DBD9',
 }
 
 return colors, palette
+-- vim: set nomodifiable :

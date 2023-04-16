@@ -142,3 +142,4 @@ local colors = {
 }
 
 return colors, palette
+-- vim: set nomodifiable :

@@ -84,9 +84,9 @@ local theme_mappings = {
 local function hex_to_rgb(hex_str)
   local hex = '[abcdef0-9][abcdef0-9]'
   local pat = '^#(' .. hex .. ')(' .. hex .. ')(' .. hex .. ')$'
-  hex_str = string.lower(hex_str)
-  assert(string.find(hex_str, pat) ~= nil, 'hex_to_rgb: invalid hex_str: ' .. tostring(hex_str))
-  local red, green, blue = string.match(hex_str, pat)
+  hex_str = hex_str:lower()
+  assert(hex_str:find(pat) ~= nil, 'hex_to_rgb: invalid hex_str: ' .. tostring(hex_str))
+  local red, green, blue = hex_str:match(pat)
   return { tonumber(red, 16), tonumber(green, 16), tonumber(blue, 16) }
 end
 

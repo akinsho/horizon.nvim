@@ -1,4 +1,6 @@
 {
+  "keywordStyle": "",
+  "tagStyle": "italic",
   "colors": {
     "foreground": "{{ syntax.gray }}",
     "diffEditor.removedTextBackground": "#4A2024"

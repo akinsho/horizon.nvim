@@ -76,7 +76,6 @@ local colors = {
   indent_guide_fg = '#252732',
   keyword = {
     fg = '#A86EC9',
-    italic = true,
   },
   link = {
     fg = '#E4A88A',
@@ -108,7 +107,6 @@ local colors = {
   statusline_fg = '#797B80',
   storage = {
     fg = '#A86EC9',
-    italic = true,
   },
   string = {
     fg = '#E4A88A',

@@ -136,7 +136,7 @@ local function parse_token_settings(token, colors)
     k = ({ foreground = 'fg', background = 'bg' })[k] or k
     local value = parse_variables(v, colors)
     if k == 'fontStyle' then
-      hl[value] = true
+      if #value > 0 then hl[value] = true end
     else
       hl[k] = value
     end
@@ -174,15 +174,18 @@ end
 local function apply_overrides(files)
   local template, colors, overrides = files.template, files.colors, files.overrides
 
-  if overrides.colors then template.colors = vim.tbl_deep_extend('force', template.colors, overrides.colors) end
-
-  if overrides.tokenColors then
-    local seen = {}
-    local function get_name(scope) return type(scope) == 'table' and table.concat(scope, ',') or scope end
-    for _, token in ipairs(overrides.tokenColors) do
-      seen[get_name(token.scope)] = token
+  for key, override in pairs(overrides) do
+    if key == 'colors' then
+      template.colors = vim.tbl_deep_extend('force', template.colors, override)
+    elseif key == 'tokenColors' then
+      local seen = {}
+      for _, token in ipairs(override) do
+        seen[token.scope] = token
+      end
+      template.tokenColors = vim.tbl_map(function(tk) return seen[tk.scope] or tk end, template.tokenColors)
+    else
+      colors[key] = override
     end
-    template.tokenColors = vim.tbl_map(function(tk) return seen[get_name(tk.scope)] or tk end, template.tokenColors)
   end
   return template, colors
 end

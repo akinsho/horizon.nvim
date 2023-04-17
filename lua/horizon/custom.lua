@@ -6,7 +6,8 @@
 -- TODO: over time ideally this highlights should be added either as
 -- overrides in (overrides.json) since they do not scale to the light theme
 -- or inherited/updated from the original theme.
-local colors = {
+
+local dark = {
   -- dropdown_bg = '#232530',
   -- scroll_bg = '#16161C',
   -- scroll_fg = '#6C6F93',
@@ -65,6 +66,13 @@ local colors = {
   sign_change = '#21BFC2',
   sign_add_alt = '#27D796',
   sign_change_alt = '#21BFC2',
+}
+
+local light = {}
+
+local colors = {
+  dark = dark,
+  light = setmetatable(light, { __index = dark }),
 }
 
 return colors

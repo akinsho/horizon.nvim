@@ -147,16 +147,17 @@ end
 ---@param mode Theme
 ---@return ParsedFiles
 local function read_json_files(mode)
+  local root = function(path) return ('build/%s/%s'):format(mode, path) end
   local paths = {
     dark = {
-      template = 'build/dark/template.json',
-      colors = 'build/dark/globals.json',
-      overrides = 'build/dark/overrides.json',
+      template = root('template.json'),
+      colors = root('globals.json'),
+      overrides = root('overrides.json'),
     },
     light = {
-      template = 'build/light/template.json',
-      colors = 'build/light/globals.json',
-      overrides = 'build/light/overrides.json',
+      template = root('template.json'),
+      colors = root('globals.json'),
+      overrides = root('overrides.json'),
     },
   }
   if not paths[mode] then error('Invalid mode: ' .. mode) end
@@ -174,18 +175,16 @@ end
 local function apply_overrides(files)
   local template, colors, overrides = files.template, files.colors, files.overrides
 
+  template.colors = vim.tbl_deep_extend('force', template.colors, overrides.colors)
+
+  local seen = {}
+  for _, token in ipairs(overrides.tokenColors) do
+    seen[token.scope] = token
+  end
+  template.tokenColors = vim.tbl_map(function(tk) return seen[tk.scope] or tk end, template.tokenColors)
+
   for key, override in pairs(overrides) do
-    if key == 'colors' then
-      template.colors = vim.tbl_deep_extend('force', template.colors, override)
-    elseif key == 'tokenColors' then
-      local seen = {}
-      for _, token in ipairs(override) do
-        seen[token.scope] = token
-      end
-      template.tokenColors = vim.tbl_map(function(tk) return seen[tk.scope] or tk end, template.tokenColors)
-    else
-      colors[key] = override
-    end
+    if not vim.tbl_contains({ 'colors', 'tokenColors' }, key) then colors[key] = override end
   end
   return template, colors
 end

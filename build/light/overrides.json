@@ -1,5 +1,6 @@
 {
   "keywordStyle": "",
   "tagStyle": "italic",
-  "colors": {}
+  "colors": {},
+  "tokenColors": []
 }

@@ -1,4 +1,4 @@
-local fn, api, cmd = vim.fn, vim.api, vim.cmd
+local fn, cmd = vim.fn, vim.cmd
 local o, g = vim.o, vim.g
 
 ---@class horizon.Plugins

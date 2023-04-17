@@ -195,9 +195,9 @@ local output_template = [[
 
 local palette = %s
 
-local colors = %s
+local theme = %s
 
-return colors, palette
+return { theme = theme, palette = palette }
 -- vim: set nomodifiable :
 ]]
 

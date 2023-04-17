@@ -30,7 +30,7 @@ local palette = {
   },
 }
 
-local colors = {
+local theme = {
   active_line_number_fg = '#797B80',
   bg = '#1C1E26',
   class_variable = {
@@ -138,5 +138,5 @@ local colors = {
   winseparator_fg = '#1A1C23',
 }
 
-return colors, palette
+return { theme = theme, palette = palette }
 -- vim: set nomodifiable :

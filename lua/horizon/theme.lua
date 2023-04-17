@@ -1,5 +1,3 @@
-local c = require('horizon.custom')
-
 ---@class horizon.Opts
 ---@field fg string
 ---@field bg string
@@ -12,12 +10,77 @@ local c = require('horizon.custom')
 ---@field standout boolean
 ---@field link string
 
+---@class CustomPalette
+---@field hint string
+---@field info string
+---@field warn string
+---@field error string
+---@field error_bg string
+---@field warn_bg string
+---@field info_bg string
+---@field hint_bg string
+---@field purple1 string
+---@field gray string
+---@field gold string
+---@field blue1 string
+---@field blue2 string
+---@field blue3 string
+---@field diff_change string
+---@field diff_text string
+
 ---@alias horizon.HighlightDef {[string]: horizon.Opts}
+
+---@alias ThemeData {theme: {[string]: horizon.Opts}, palette: {[string]: { [string]: string }}}
+
 ---@alias Theme 'light' | 'dark'
 
-local api = vim.api
-
 local M = {}
+
+---@param color string A hex color
+---@param percent float a negative number darkens and a positive one brightens
+---@return string
+local function tint(color, percent)
+  assert(color and percent, 'cannot alter a color without specifying a color and percentage')
+  local r = tonumber(color:sub(2, 3), 16)
+  local g = tonumber(color:sub(4, 5), 16)
+  local b = tonumber(color:sub(6), 16)
+  if not r or not g or not b then return 'NONE' end
+  local blend = function(component)
+    component = math.floor(component * (1 + percent))
+    return math.min(math.max(component, 0), 255)
+  end
+  return string.format('#%02x%02x%02x', blend(r), blend(g), blend(b))
+end
+
+-- These colours represent values not directly taken from the
+-- original theme, but are similar to/inspired by the original.
+-- they are largely used to plugin the gaps where there is no
+-- color specified for something that needs to be highlighted
+-- in the neovim context
+---@param data CustomPalette
+---@return CustomPalette
+local function get_custom_highlights(data)
+  local d = data ---@module 'horizon.palette-dark'
+  local t, p = d.theme, d.palette
+  return {
+    hint = p.syntax.turquoise,
+    info = p.syntax.rosebud,
+    warn = t.warning,
+    error = t.error,
+    error_bg = tint(t.error, -0.8), -- error_bg = '#33222c',
+    warn_bg = tint(t.warning, -0.8), -- warn_bg = '#332e31',
+    info_bg = tint(p.syntax.rosebud, -0.7), -- info_bg = '#1e3132',
+    hint_bg = tint(p.syntax.turquoise, -0.7), -- hint_bg = '#252732',
+    purple1 = tint(p.syntax.lavender, -0.2), -- '#B180D7',
+    gray = '#4B4C53',
+    gold = '#C09553',
+    blue1 = '#214a63',
+    blue2 = '#042E48',
+    blue3 = '#75BEFF',
+    diff_change = '#273842',
+    diff_text = '#314753',
+  }
+end
 
 ---@param theme horizon.HighlightDef
 ---@param palette {[string]: {[string]: string}}
@@ -61,11 +124,12 @@ local function get_lsp_kind_highlights(theme, palette)
   }
 end
 
----@param bg Theme
+---@param data ThemeData
+---@param custom CustomPalette
 ---@return horizon.HighlightDef
-local function get_highlights(bg)
-  local data = require(('horizon.palette-%s'):format(bg)) ---@module 'horizon.palette-dark'
-  local theme, p, custom = data.theme, data.palette, c[bg]
+local function get_highlights(data, custom)
+  local d = data ---@module 'horizon.palette-dark'
+  local theme, p = d.theme, d.palette
   return {
     -- Editor
     ['Normal'] = { fg = theme.fg, bg = theme.bg },
@@ -94,9 +158,9 @@ local function get_highlights(bg)
     ['CursorLine'] = { bg = theme.cursorline_bg },
     ['CursorColumn'] = { bg = p.ui.background },
     ['ColorColumn'] = { bg = p.ui.background },
-    ['Visual'] = { bg = custom.blue1 },
+    ['Visual'] = { bg = theme.visual },
     ['VisualNOS'] = { bg = p.ui.background },
-    ['WarningMsg'] = { fg = p.ui.negative, bg = theme.bg },
+    ['WarningMsg'] = { fg = custom.warn, bg = theme.bg },
     ['DiffAdd'] = { bg = theme.diff_added_bg },
     ['DiffDelete'] = { bg = theme.diff_deleted_bg },
     ['DiffChange'] = { bg = custom.diff_change },
@@ -229,9 +293,9 @@ local function get_highlights(bg)
     ['@text'] = { fg = p.ui.lightText },
     ['@text.reference'] = { fg = theme.link.fg, sp = p.ui.accent, underline = true, bold = true },
     ['@tag.attribute'] = { fg = p.syntax.apricot, italic = true },
-    ['@error'] = { fg = theme.error },
-    ['@warning'] = { fg = theme.warning },
-    ['@query.linter.error'] = { fg = p.ui.negative },
+    ['@error'] = { fg = custom.error },
+    ['@warning'] = { fg = custom.warn },
+    ['@query.linter.error'] = { fg = custom.error },
     ['@uri'] = { fg = p.syntax.turquoise, underline = true },
     ['@math'] = { fg = p.syntax.tacao },
 
@@ -257,10 +321,10 @@ local function get_highlights(bg)
     ['@lsp.mod.deprecated'] = { strikethrough = true },
 
     -- LSP
-    ['DiagnosticHint'] = { fg = p.ui.accentAlt },
-    ['DiagnosticInfo'] = { fg = p.ui.warning },
-    ['DiagnosticWarn'] = { fg = p.ui.tertiaryAccent },
-    ['DiagnosticError'] = { fg = p.ui.negative },
+    ['DiagnosticHint'] = { fg = custom.hint },
+    ['DiagnosticInfo'] = { fg = custom.info },
+    ['DiagnosticWarn'] = { fg = custom.warn },
+    ['DiagnosticError'] = { fg = custom.error },
     ['DiagnosticOther'] = { fg = custom.purple1 },
     ['DiagnosticSignHint'] = { link = 'DiagnosticHint' },
     ['DiagnosticSignInfo'] = { link = 'DiagnosticInfo' },
@@ -272,45 +336,20 @@ local function get_highlights(bg)
     ['DiagnosticFloatingInfo'] = { link = 'DiagnosticInfo' },
     ['DiagnosticFloatingWarn'] = { link = 'DiagnosticWarn' },
     ['DiagnosticFloatingError'] = { link = 'DiagnosticError' },
-    ['DiagnosticUnderlineHint'] = { sp = p.ui.accentAlt, undercurl = true },
-    ['DiagnosticUnderlineInfo'] = { sp = p.ui.warning, undercurl = true },
-    ['DiagnosticUnderlineWarn'] = { sp = p.ui.tertiaryAccent, undercurl = true },
-    ['DiagnosticUnderlineError'] = { sp = p.ui.negative, undercurl = true },
+    ['DiagnosticUnderlineHint'] = { sp = custom.hint, undercurl = true },
+    ['DiagnosticUnderlineInfo'] = { sp = custom.info, undercurl = true },
+    ['DiagnosticUnderlineWarn'] = { sp = custom.warn, undercurl = true },
+    ['DiagnosticUnderlineError'] = { sp = custom.error, undercurl = true },
     ['DiagnosticSignInformation'] = { link = 'DiagnosticInfo' },
-    ['DiagnosticVirtualTextHint'] = { fg = p.ui.accentAlt, bg = custom.hint_bg },
-    ['DiagnosticVirtualTextInfo'] = { fg = p.ui.warning, bg = custom.info_bg },
-    ['DiagnosticVirtualTextWarn'] = { fg = p.ui.tertiaryAccent, bg = custom.warn_bg },
-    ['DiagnosticVirtualTextError'] = { fg = p.ui.negative, bg = custom.error_bg },
-    ['LspDiagnosticsError'] = { fg = p.ui.negative },
-    ['LspDiagnosticsWarning'] = { fg = p.ui.tertiaryAccent },
-    ['LspDiagnosticsInfo'] = { fg = p.ui.warning },
-    ['LspDiagnosticsInformation'] = { link = 'LspDiagnosticsInfo' },
-    ['LspDiagnosticsHint'] = { fg = p.ui.accentAlt },
-    ['LspDiagnosticsDefaultError'] = { link = 'LspDiagnosticsError' },
-    ['LspDiagnosticsDefaultWarning'] = { link = 'LspDiagnosticsWarning' },
-    ['LspDiagnosticsDefaultInformation'] = { link = 'LspDiagnosticsInfo' },
-    ['LspDiagnosticsDefaultInfo'] = { link = 'LspDiagnosticsInfo' },
-    ['LspDiagnosticsDefaultHint'] = { link = 'LspDiagnosticsHint' },
-    ['LspDiagnosticsVirtualTextError'] = { link = 'DiagnosticVirtualTextError' },
-    ['LspDiagnosticsVirtualTextWarning'] = { link = 'DiagnosticVirtualTextWarn' },
-    ['LspDiagnosticsVirtualTextInformation'] = { link = 'DiagnosticVirtualTextInfo' },
-    ['LspDiagnosticsVirtualTextInfo'] = { link = 'DiagnosticVirtualTextInfo' },
-    ['LspDiagnosticsVirtualTextHint'] = { link = 'DiagnosticVirtualTextHint' },
-    ['LspDiagnosticsFloatingError'] = { link = 'LspDiagnosticsError' },
-    ['LspDiagnosticsFloatingWarning'] = { link = 'LspDiagnosticsWarning' },
-    ['LspDiagnosticsFloatingInformation'] = { link = 'LspDiagnosticsInfo' },
-    ['LspDiagnosticsFloatingInfo'] = { link = 'LspDiagnosticsInfo' },
-    ['LspDiagnosticsFloatingHint'] = { link = 'LspDiagnosticsHint' },
-    ['LspDiagnosticsSignError'] = { link = 'LspDiagnosticsError' },
-    ['LspDiagnosticsSignWarning'] = { link = 'LspDiagnosticsWarning' },
-    ['LspDiagnosticsSignInformation'] = { link = 'LspDiagnosticsInfo' },
-    ['LspDiagnosticsSignInfo'] = { link = 'LspDiagnosticsInfo' },
-    ['LspDiagnosticsSignHint'] = { link = 'LspDiagnosticsHint' },
-    ['NvimTreeLspDiagnosticsError'] = { link = 'LspDiagnosticsError' },
-    ['NvimTreeLspDiagnosticsWarning'] = { link = 'LspDiagnosticsWarning' },
-    ['NvimTreeLspDiagnosticsInformation'] = { link = 'LspDiagnosticsInfo' },
-    ['NvimTreeLspDiagnosticsInfo'] = { link = 'LspDiagnosticsInfo' },
-    ['NvimTreeLspDiagnosticsHint'] = { link = 'LspDiagnosticsHint' },
+    ['DiagnosticVirtualTextHint'] = { fg = custom.hint, bg = custom.hint_bg },
+    ['DiagnosticVirtualTextInfo'] = { fg = custom.info, bg = custom.info_bg },
+    ['DiagnosticVirtualTextWarn'] = { fg = custom.warn, bg = custom.warn_bg },
+    ['DiagnosticVirtualTextError'] = { fg = custom.error, bg = custom.error_bg },
+    ['NvimTreeLspDiagnosticsError'] = { link = 'DiagnosticError' },
+    ['NvimTreeLspDiagnosticsWarning'] = { link = 'DiagnosticWarn' },
+    ['NvimTreeLspDiagnosticsInformation'] = { link = 'DiagnosticInfo' },
+    ['NvimTreeLspDiagnosticsInfo'] = { link = 'DiagnosticInfo' },
+    ['NvimTreeLspDiagnosticsHint'] = { link = 'DiagnosticHint' },
     ['LspDiagnosticsUnderlineError'] = { link = 'DiagnosticUnderlineError' },
     ['LspDiagnosticsUnderlineWarning'] = { link = 'DiagnosticUnderlineWarn' },
     ['LspDiagnosticsUnderlineInformation'] = { link = 'DiagnosticUnderlineInfo' },
@@ -331,28 +370,29 @@ local function get_highlights(bg)
   }
 end
 
----@param bg Theme
+---@param data ThemeData
+---@param custom CustomPalette
 ---@return horizon.HighlightDef
-local function get_plugin_highlights(bg)
-  local data = require(('horizon.palette-%s'):format(bg)) ---@module 'horizon.palette-dark'
-  local theme, p, custom = data.theme, data.palette, c[bg]
-  local lsp_kinds = get_lsp_kind_highlights(theme, p)
+local function get_plugin_highlights(data, custom)
+  local d = data ---@module 'horizon.palette-dark'
+  local t, p = d.theme, d.palette
+  local lsp_kinds = get_lsp_kind_highlights(t, p)
   return {
     whichkey = {
       ['WhichKey'] = { fg = p.syntax.lavender },
       ['WhichKeySeperator'] = { fg = p.syntax.tacao },
       ['WhichKeyGroup'] = { fg = p.syntax.cranberry },
-      ['WhichKeyDesc'] = { fg = theme.fg },
-      ['WhichKeyFloat'] = { bg = theme.float_bg },
+      ['WhichKeyDesc'] = { fg = t.fg },
+      ['WhichKeyFloat'] = { bg = t.float_bg },
     },
     gitsigns = {
-      ['SignAdd'] = { fg = theme.git_added_fg },
-      ['SignChange'] = { fg = theme.git_modified_fg },
-      ['SignDelete'] = { fg = theme.git_deleted_fg },
-      ['GitSignsAdd'] = { fg = theme.git_added_fg },
-      ['GitSignsChange'] = { fg = theme.git_modified_fg },
-      ['GitSignsDelete'] = { fg = theme.git_deleted_fg },
-      ['GitSignsUntracked'] = { fg = theme.git_untracked_fg },
+      ['SignAdd'] = { fg = t.git_added_fg },
+      ['SignChange'] = { fg = t.git_modified_fg },
+      ['SignDelete'] = { fg = t.git_deleted_fg },
+      ['GitSignsAdd'] = { fg = t.git_added_fg },
+      ['GitSignsChange'] = { fg = t.git_modified_fg },
+      ['GitSignsDelete'] = { fg = t.git_deleted_fg },
+      ['GitSignsUntracked'] = { fg = t.git_untracked_fg },
       ['GitSignsAddInline'] = { link = 'DiffText' },
       ['GitSignsChangeInline'] = { link = 'DiffChange' },
       ['GitSignsDeleteInline'] = { link = 'DiffDelete' },
@@ -365,7 +405,7 @@ local function get_plugin_highlights(bg)
       ['TelescopeSelection'] = { bg = custom.blue2 },
       ['TelescopeSelectionCaret'] = { fg = p.syntax.cranberry, bg = custom.blue2 },
       ['TelescopeMatching'] = { fg = p.syntax.tacao, bold = true, italic = true },
-      ['TelescopeBorder'] = { fg = theme.float_border },
+      ['TelescopeBorder'] = { fg = t.float_border },
       ['TelescopeNormal'] = { fg = p.ui.lightText, bg = p.ui.background },
       ['TelescopePromptTitle'] = { fg = p.syntax.apricot },
       ['TelescopePromptPrefix'] = { fg = p.syntax.turquoise },
@@ -377,62 +417,62 @@ local function get_plugin_highlights(bg)
     nvim_tree = {
       ['NvimTreeFolderIcon'] = { fg = custom.gold },
       ['NvimTreeIndentMarker'] = { fg = custom.gray },
-      ['NvimTreeNormal'] = { fg = theme.sidebar_fg, bg = theme.sidebar_bg },
-      ['NvimTreeVertSplit'] = { fg = theme.sidebar_bg, bg = theme.sidebar_bg },
-      ['NvimTreeFolderName'] = { fg = theme.sidebar_fg },
-      ['NvimTreeOpenedFolderName'] = { fg = theme.sidebar_fg, bold = true, italic = true },
-      ['NvimTreeEmptyFolderName'] = theme.comment,
-      ['NvimTreeGitIgnored'] = theme.comment,
+      ['NvimTreeNormal'] = { fg = t.sidebar_fg, bg = t.sidebar_bg },
+      ['NvimTreeVertSplit'] = { fg = t.sidebar_bg, bg = t.sidebar_bg },
+      ['NvimTreeFolderName'] = { fg = t.sidebar_fg },
+      ['NvimTreeOpenedFolderName'] = { fg = t.sidebar_fg, bold = true, italic = true },
+      ['NvimTreeEmptyFolderName'] = t.comment,
+      ['NvimTreeGitIgnored'] = t.comment,
       ['NvimTreeImageFile'] = { fg = p.ui.lightText },
       ['NvimTreeSpecialFile'] = { fg = p.syntax.apricot },
-      ['NvimTreeEndOfBuffer'] = { fg = theme.comment.fg },
-      ['NvimTreeCursorLine'] = { bg = theme.cursorline_bg },
-      ['NvimTreeGitStaged'] = { fg = theme.git_added_fg },
-      ['NvimTreeGitNew'] = { fg = theme.git_untracked_fg },
-      ['NvimTreeGitRenamed'] = { fg = theme.git_modified_fg },
-      ['NvimTreeGitDeleted'] = { fg = theme.git_deleted_fg },
-      ['NvimTreeGitMerge'] = { fg = theme.git_modified_fg },
-      ['NvimTreeGitDirty'] = { fg = theme.git_untracked_fg },
+      ['NvimTreeEndOfBuffer'] = { fg = t.comment.fg },
+      ['NvimTreeCursorLine'] = { bg = t.cursorline_bg },
+      ['NvimTreeGitStaged'] = { fg = t.git_added_fg },
+      ['NvimTreeGitNew'] = { fg = t.git_untracked_fg },
+      ['NvimTreeGitRenamed'] = { fg = t.git_modified_fg },
+      ['NvimTreeGitDeleted'] = { fg = t.git_deleted_fg },
+      ['NvimTreeGitMerge'] = { fg = t.git_modified_fg },
+      ['NvimTreeGitDirty'] = { fg = t.git_untracked_fg },
       ['NvimTreeSymlink'] = { fg = p.syntax.turquoise },
-      ['NvimTreeRootFolder'] = { fg = theme.fg, bold = true },
+      ['NvimTreeRootFolder'] = { fg = t.fg, bold = true },
       ['NvimTreeExecFile'] = { fg = '#9FBA89' },
     },
     neo_tree = {
       ['NeoTreeFolderIcon'] = { fg = custom.gold },
       ['NeoTreeIndentMarker'] = { fg = custom.gray },
-      ['NeoTreeNormal'] = { fg = theme.sidebar_fg, bg = theme.sidebar_bg },
-      ['NeoTreeFileName'] = { fg = theme.sidebar_fg },
-      ['NeoTreeFileNameOpened'] = { fg = theme.fg, bold = true, italic = true },
-      ['NeoTreeDirectoryName'] = { fg = theme.sidebar_fg },
+      ['NeoTreeNormal'] = { fg = t.sidebar_fg, bg = t.sidebar_bg },
+      ['NeoTreeFileName'] = { fg = t.sidebar_fg },
+      ['NeoTreeFileNameOpened'] = { fg = t.fg, bold = true, italic = true },
+      ['NeoTreeDirectoryName'] = { fg = t.sidebar_fg },
       ['NeoTreeDirectoryIcon'] = { fg = custom.gold },
-      ['NeoTreeVertSplit'] = { fg = theme.sidebar_bg, bg = theme.sidebar_bg },
-      ['NeoTreeWinSeparator'] = { fg = theme.sidebar_bg, bg = theme.sidebar_bg },
-      ['NeoTreeOpenedFolderName'] = { fg = theme.fg, bold = true, italic = true },
-      ['NeoTreeEmptyFolderName'] = { fg = theme.comment.fg, italic = true },
-      ['NeoTreeGitIgnored'] = { fg = theme.comment.fg, italic = true },
-      ['NeoTreeDotfile'] = { fg = theme.comment.fg, italic = true },
-      ['NeoTreeHiddenByName'] = { fg = theme.comment.fg, italic = true },
-      ['NeoTreeEndOfBuffer'] = { fg = theme.comment.fg },
-      ['NeoTreeCursorLine'] = { bg = theme.cursorline_bg },
-      ['NeoTreeGitStaged'] = { fg = theme.git_added_fg },
-      ['NeoTreeGitUntracked'] = { fg = theme.git_untracked_fg },
-      ['NeoTreeGitDeleted'] = { fg = theme.git_deleted_fg },
-      ['NeoTreeGitModified'] = { fg = theme.git_modified_fg },
+      ['NeoTreeVertSplit'] = { fg = t.sidebar_bg, bg = t.sidebar_bg },
+      ['NeoTreeWinSeparator'] = { fg = t.sidebar_bg, bg = t.sidebar_bg },
+      ['NeoTreeOpenedFolderName'] = { fg = t.fg, bold = true, italic = true },
+      ['NeoTreeEmptyFolderName'] = { fg = t.comment.fg, italic = true },
+      ['NeoTreeGitIgnored'] = { fg = t.comment.fg, italic = true },
+      ['NeoTreeDotfile'] = { fg = t.comment.fg, italic = true },
+      ['NeoTreeHiddenByName'] = { fg = t.comment.fg, italic = true },
+      ['NeoTreeEndOfBuffer'] = { fg = t.comment.fg },
+      ['NeoTreeCursorLine'] = { bg = t.cursorline_bg },
+      ['NeoTreeGitStaged'] = { fg = t.git_added_fg },
+      ['NeoTreeGitUntracked'] = { fg = t.git_untracked_fg },
+      ['NeoTreeGitDeleted'] = { fg = t.git_deleted_fg },
+      ['NeoTreeGitModified'] = { fg = t.git_modified_fg },
       ['NeoTreeSymbolicLinkTarget'] = { fg = p.syntax.turquoise },
-      ['NeoTreeRootName'] = { fg = theme.fg, bold = true },
-      ['NeoTreeTitleBar'] = { fg = p.ui.backgroundAlt, bg = theme.fg, bold = true },
+      ['NeoTreeRootName'] = { fg = t.fg, bold = true },
+      ['NeoTreeTitleBar'] = { fg = p.ui.backgroundAlt, bg = t.fg, bold = true },
     },
     barbar = {
-      ['BufferCurrent'] = { fg = theme.fg, bg = theme.bg },
-      ['BufferCurrentIndex'] = { fg = theme.fg, bg = theme.bg },
-      ['BufferCurrentMod'] = { fg = p.ui.warning, bg = theme.bg },
-      ['BufferCurrentSign'] = { fg = p.ui.accentAlt, bg = theme.bg },
-      ['BufferCurrentTarget'] = { fg = p.syntax.cranberry, bg = theme.bg, bold = true },
-      ['BufferVisible'] = { fg = theme.fg, bg = theme.bg },
-      ['BufferVisibleIndex'] = { fg = theme.fg, bg = theme.bg },
-      ['BufferVisibleMod'] = { fg = p.ui.warning, bg = theme.bg },
-      ['BufferVisibleSign'] = { fg = custom.gray, bg = theme.bg },
-      ['BufferVisibleTarget'] = { fg = p.syntax.cranberry, bg = theme.bg, bold = true },
+      ['BufferCurrent'] = { fg = t.fg, bg = t.bg },
+      ['BufferCurrentIndex'] = { fg = t.fg, bg = t.bg },
+      ['BufferCurrentMod'] = { fg = p.ui.warning, bg = t.bg },
+      ['BufferCurrentSign'] = { fg = p.ui.accentAlt, bg = t.bg },
+      ['BufferCurrentTarget'] = { fg = p.syntax.cranberry, bg = t.bg, bold = true },
+      ['BufferVisible'] = { fg = t.fg, bg = t.bg },
+      ['BufferVisibleIndex'] = { fg = t.fg, bg = t.bg },
+      ['BufferVisibleMod'] = { fg = p.ui.warning, bg = t.bg },
+      ['BufferVisibleSign'] = { fg = custom.gray, bg = t.bg },
+      ['BufferVisibleTarget'] = { fg = p.syntax.cranberry, bg = t.bg, bold = true },
       ['BufferInactive'] = { fg = custom.gray, bg = p.ui.background },
       ['BufferInactiveIndex'] = { fg = custom.gray, bg = p.ui.background },
       ['BufferInactiveMod'] = { fg = p.ui.warning, bg = p.ui.background },
@@ -440,13 +480,13 @@ local function get_plugin_highlights(bg)
       ['BufferInactiveTarget'] = { fg = p.syntax.cranberry, bg = p.ui.background, bold = true },
     },
     indent_blankline = {
-      ['IndentBlanklineContextChar'] = { fg = theme.indent_guide_active_fg },
-      ['IndentBlanklineContextStart'] = { sp = theme.indent_guide_active_fg, underline = true },
-      ['IndentBlanklineChar'] = { fg = theme.indent_guide_fg },
+      ['IndentBlanklineContextChar'] = { fg = t.indent_guide_active_fg },
+      ['IndentBlanklineContextStart'] = { sp = t.indent_guide_active_fg, underline = true },
+      ['IndentBlanklineChar'] = { fg = t.indent_guide_fg },
     },
     cmp = {
-      ['CmpItemAbbrMatch'] = { fg = theme.pmenu_item_sel_fg },
-      ['CmpItemAbbrMatchFuzzy'] = { fg = theme.pmenu_item_sel_fg, italic = true },
+      ['CmpItemAbbrMatch'] = { fg = t.pmenu_item_sel_fg },
+      ['CmpItemAbbrMatchFuzzy'] = { fg = t.pmenu_item_sel_fg, italic = true },
       ['CmpItemAbbrDeprecated'] = { fg = custom.gray, strikethrough = true },
       ['CmpItemKindVariable'] = lsp_kinds['variable'],
       ['CmpItemKindModule'] = lsp_kinds['module'],
@@ -511,8 +551,8 @@ local function get_plugin_highlights(bg)
       ['NavicIconsEvent'] = lsp_kinds['event'],
       ['NavicIconsOperator'] = lsp_kinds['operator'],
       ['NavicIconsTypeParameter'] = lsp_kinds['typeParameter'],
-      ['NavicText'] = { fg = theme.fg },
-      ['NavicSeparator'] = { fg = theme.fg },
+      ['NavicText'] = { fg = t.fg },
+      ['NavicSeparator'] = { fg = t.fg },
     },
     packer = {
       ['packerString'] = { fg = custom.gold },
@@ -530,7 +570,7 @@ local function get_plugin_highlights(bg)
       ['NotifyERRORBorder'] = { fg = '#8A1F1F' },
       ['NotifyWARNBorder'] = { fg = '#79491D' },
       ['NotifyINFOBorder'] = { fg = custom.blue1 },
-      ['NotifyDEBUGBorder'] = { fg = theme.float_border },
+      ['NotifyDEBUGBorder'] = { fg = t.float_border },
       ['NotifyTRACEBorder'] = { fg = '#4F3552' },
       ['NotifyERRORIcon'] = { fg = p.ui.negative },
       ['NotifyWARNIcon'] = { fg = p.ui.tertiaryAccent },
@@ -584,9 +624,11 @@ end
 ---@param config horizon.Config
 function M.set_highlights(config)
   local bg = vim.o.background
-  local highlights = integrate_plugins(config, get_plugin_highlights(bg), get_highlights(bg))
+  local data = require(('horizon.palette-%s'):format(bg)) ---@module 'horizon.palette-dark'
+  local custom = get_custom_highlights(data)
+  local highlights = integrate_plugins(config, get_plugin_highlights(data, custom), get_highlights(data, custom))
   for name, value in pairs(highlights) do
-    api.nvim_set_hl(0, name, value)
+    vim.api.nvim_set_hl(0, name, value)
   end
 end
 

@@ -63,14 +63,14 @@ local function get_custom_highlights(data)
   local d = data ---@module 'horizon.palette-dark'
   local t, p = d.theme, d.palette
   return {
-    hint = p.syntax.turquoise,
-    info = p.syntax.rosebud,
-    warn = t.warning,
+    hint = p.syntax.lavender,
+    info = p.syntax.turquoise,
+    warn = p.syntax.apricot,
     error = t.error,
     error_bg = tint(t.error, -0.8), -- error_bg = '#33222c',
-    warn_bg = tint(t.warning, -0.8), -- warn_bg = '#332e31',
-    info_bg = tint(p.syntax.rosebud, -0.7), -- info_bg = '#1e3132',
-    hint_bg = tint(p.syntax.turquoise, -0.7), -- hint_bg = '#252732',
+    warn_bg = tint(p.syntax.apricot, -0.8), -- warn_bg = '#332e31',
+    info_bg = tint(p.syntax.turquoise, -0.7), -- info_bg = '#1e3132',
+    hint_bg = tint(p.syntax.lavender, -0.7), -- hint_bg = '#252732',
     purple1 = tint(p.syntax.lavender, -0.2), -- '#B180D7',
     gray = '#4B4C53',
     gold = '#C09553',
@@ -596,8 +596,8 @@ local function get_plugin_highlights(data, custom)
       ['HopNextKey'] = { fg = '#4ae0ff' },
       ['HopNextKey1'] = { fg = '#d44eed' },
       ['HopNextKey2'] = { fg = '#b42ecd' },
-      ['HopUnmatched'] = { fg = custom.gray },
       ['HopPreview'] = { fg = '#c7ba7d' },
+      ['HopUnmatched'] = { fg = custom.gray },
     },
     crates = {
       ['CratesNvimLoading'] = { fg = p.ui.accentAlt },

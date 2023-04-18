@@ -35,19 +35,14 @@ Custom highlights for plugin's can be enabled or disabled using the setup option
   "akinsho/horizon.nvim",
   opts = {
     plugins = {
-        cmp = true
-        indent_blankline = true,
         cmp = true,
         indent_blankline = true,
         nvim_tree = true,
         telescope = true,
         which_key = true,
         barbar = true,
-        cmp = true,
         notify = true,
         symbols_outline = true,
-        telescope = true,
-        nvim_tree = true,
         neo_tree = true,
         gitsigns = true,
         crates = true,
@@ -67,11 +62,8 @@ Currently supported plugins are:
 - telescope
 - which-key
 - barbar
-- cmp
 - notify
 - symbols-outline
-- telescope
-- nvim-tree
 - neo-tree
 - gitsigns
 - crates

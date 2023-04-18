@@ -24,6 +24,9 @@ use {"akinsho/horizon.nvim", tag = "*"}
 { "akinsho/horizon.nvim", version = "*" }
 
 vim.cmd.colorscheme('horizon')
+
+-- To change the theme variant
+vim.o.background = "dark" -- or "light"
 ```
 
 ### Plugin integrations

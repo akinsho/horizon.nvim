@@ -291,6 +291,7 @@ local function get_highlights(data, custom)
     ['@parameter.reference'] = theme.parameter,
     ['@attribute'] = { fg = p.syntax.cranberry },
     ['@text'] = { fg = p.ui.lightText },
+    ['@text.emphasis'] = { bold = true },
     ['@text.reference'] = { fg = theme.link.fg, sp = p.ui.accent, underline = true, bold = true },
     ['@tag.attribute'] = { fg = p.syntax.apricot, italic = true },
     ['@error'] = { fg = custom.error },

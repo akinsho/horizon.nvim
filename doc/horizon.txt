@@ -12,7 +12,8 @@ Table of Contents                                  *horizon-table-of-contents*
 ==============================================================================
 1. horizon.nvim                                         *horizon-horizon.nvim*
 
-A neovim implementation of the Horizon theme.
+A neovim implementation of the Horizon theme
+<https://horizontheme.netlify.app/>.
 
 
 STATUS ~

@@ -18,10 +18,10 @@ Some highlights are still being finalised so there may be some changes to the th
 
 ```lua
 -- packer.nvim
-use "akinsho/horizon.nvim"
+use {"akinsho/horizon.nvim", tag = "*"}
 
 -- lazy.nvim
-{ "akinsho/horizon.nvim" }
+{ "akinsho/horizon.nvim", version = "*" }
 
 vim.cmd.colorscheme('horizon')
 ```

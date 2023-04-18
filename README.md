@@ -2,7 +2,7 @@
 
 ![logo](https://user-images.githubusercontent.com/22454918/231746321-fa9aa184-1414-4433-9997-b28242064940.png)
 
-A neovim implementation of the Horizon theme.
+A neovim implementation of the [Horizon theme](https://horizontheme.netlify.app/).
 
 ### Status
 

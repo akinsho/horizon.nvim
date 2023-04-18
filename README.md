@@ -4,6 +4,10 @@
 
 A neovim implementation of the Horizon theme.
 
+### Status
+
+Some highlights are still being finalised so there may be some changes to the theme in the near future :pray:.
+
 ## Screenshots
 
 <img width="1308" alt="image" src="https://user-images.githubusercontent.com/22454918/232234513-1ff99bb1-7c00-433b-b061-060e9ec1fe78.png">

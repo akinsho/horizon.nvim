@@ -54,7 +54,7 @@ end
 
 -- These colours represent values not directly taken from the
 -- original theme, but are similar to/inspired by the original.
--- they are largely used to plugin the gaps where there is no
+-- they are largely used to plug in the gaps where there is no
 -- color specified for something that needs to be highlighted
 -- in the neovim context
 ---@param data CustomPalette

@@ -25,9 +25,7 @@
 ---@field purple1 string
 ---@field gray string
 ---@field gold string
----@field blue1 string
----@field blue2 string
----@field blue3 string
+---@field blue string
 ---@field diff_change string
 ---@field diff_text string
 

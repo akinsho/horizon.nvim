@@ -1,27 +1,6 @@
 local fn, cmd = vim.fn, vim.cmd
 local o, g = vim.o, vim.g
 
----@class horizon.Plugins
----@field barbar boolean
----@field bufferline boolean
----@field notify boolean
----@field symbols_outline boolean
----@field telescope boolean
----@field nvim_tree boolean
----@field neo_tree boolean
----@field gitsigns boolean
----@field crates boolean
----@field hop boolean
----@field navic boolean
----@field quickscope boolean
----@field whichkey boolean
----@field indent_blankline boolean
----@field cmp boolean
----@field ts_rainbow boolean
-
----@class horizon.Config
----@field plugins horizon.Plugins
-
 local M = {}
 
 local defaults = {

@@ -598,6 +598,7 @@ function M.set_highlights(config)
   local data = require(('horizon.palette-%s'):format(bg)) ---@module 'horizon.palette-dark'
   local custom = get_custom_highlights(data)
   local highlights = integrate_plugins(config, get_plugin_highlights(data, custom), get_highlights(data, custom))
+  if config.overrides.colors then vim.tbl_extend('force', highlights, config.overrides.colors) end
   for name, value in pairs(highlights) do
     vim.api.nvim_set_hl(0, name, value)
   end

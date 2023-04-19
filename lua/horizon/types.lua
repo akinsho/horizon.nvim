@@ -49,9 +49,12 @@
 ---@field cmp boolean
 ---@field ts_rainbow boolean
 
+---@class horizon.Overrides
+---@field colors {[string]: horizon.Opts}?
+
 ---@class horizon.Config
 ---@field plugins horizon.Plugins
----@field overrides {[string]: horizon.Opts}?
+---@field overrides horizon.Overrides
 
 ---@alias horizon.HighlightDef {[string]: horizon.Opts}
 

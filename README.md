@@ -29,6 +29,37 @@ vim.cmd.colorscheme('horizon')
 vim.o.background = "dark" -- or "light"
 ```
 
+### Highlight overrides
+
+You might want to tweak the highlights used by this theme to your preferences. This is easily achievable in your
+neovim config by using a `ColorScheme` autocommand.
+
+```lua
+vim.api.nvim_create_autocommand('ColorScheme', {
+  callback = function()
+    -- see :h nvim_set_hl for more details
+    vim.api.nvim_set_hl('CursorLine', { bg = '#1e1e1e', fg = '#ffffff', underline = true })
+  end
+})
+```
+
+However as a convenience you can also use the `overrides` option to specify any changes e.g.
+
+```lua
+{
+  "akinsho/horizon.nvim",
+  opts = {
+    overrides = {
+      colors = {
+        CursorLine = { bg = '#1e1e1e', fg = '#ffffff', underline = true }
+      }
+    }
+  },
+}
+```
+
+The options are exactly the same as those passed to the `nvim_set_hl` function as ultimately that is exactly what happens.
+
 ### Plugin integrations
 
 Custom highlights for plugin's can be enabled or disabled using the setup options for this plugin.
@@ -38,20 +69,20 @@ Custom highlights for plugin's can be enabled or disabled using the setup option
   "akinsho/horizon.nvim",
   opts = {
     plugins = {
-        cmp = true,
-        indent_blankline = true,
-        nvim_tree = true,
-        telescope = true,
-        which_key = true,
-        barbar = true,
-        notify = true,
-        symbols_outline = true,
-        neo_tree = true,
-        gitsigns = true,
-        crates = true,
-        hop = true,
-        navic = true,
-        quickscope = true
+      cmp = true,
+      indent_blankline = true,
+      nvim_tree = true,
+      telescope = true,
+      which_key = true,
+      barbar = true,
+      notify = true,
+      symbols_outline = true,
+      neo_tree = true,
+      gitsigns = true,
+      crates = true,
+      hop = true,
+      navic = true,
+      quickscope = true
     }
   },
 }

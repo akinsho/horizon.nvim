@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.0](https://github.com/akinsho/horizon.nvim/compare/v1.0.0...v1.1.0) (2023-04-19)
+
+
+### Features
+
+* **config:** allow users to specify overrides ([a72ad52](https://github.com/akinsho/horizon.nvim/commit/a72ad5286e7d70ead33fdf039a296f3d4486a795))
+* **theme:** add a text emphasis highlight ([15971d3](https://github.com/akinsho/horizon.nvim/commit/15971d34c85a510b19a6541401d5ad2799bc2ffa))
+* **theme:** add ok color to custom highlights ([32aa8aa](https://github.com/akinsho/horizon.nvim/commit/32aa8aa3a57b35fd38202f15370907295e9ac2ba))
+* **theme:** change Directory highlight ([ccb06d3](https://github.com/akinsho/horizon.nvim/commit/ccb06d3c2fd5eac32cfa394239ceece6c4cc052d))
+
 ## 1.0.0 (2023-04-18)
 
 

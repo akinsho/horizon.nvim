@@ -67,11 +67,11 @@ local function get_custom_highlights(data)
     info = p.syntax.turquoise,
     warn = p.syntax.apricot,
     error = t.error,
-    error_bg = tint(t.error, -0.8), -- error_bg = '#33222c',
-    warn_bg = tint(p.syntax.apricot, -0.8), -- warn_bg = '#332e31',
-    info_bg = tint(p.syntax.turquoise, -0.7), -- info_bg = '#1e3132',
-    hint_bg = tint(p.syntax.lavender, -0.7), -- hint_bg = '#252732',
-    purple1 = tint(p.syntax.lavender, -0.2), -- '#B180D7',
+    error_bg = tint(t.error, -0.8), -- #33222c,
+    warn_bg = tint(p.syntax.apricot, -0.8), -- #332e31,
+    info_bg = tint(p.syntax.turquoise, -0.7), -- #1e3132,
+    hint_bg = tint(p.syntax.lavender, -0.7), -- #252732,
+    purple1 = tint(p.syntax.lavender, -0.2), -- #B180D7,
     gray = '#4B4C53',
     gold = '#C09553',
     blue1 = '#214a63',
@@ -79,6 +79,7 @@ local function get_custom_highlights(data)
     blue3 = '#75BEFF',
     diff_change = '#273842',
     diff_text = '#314753',
+    ok = t.positive,
   }
 end
 

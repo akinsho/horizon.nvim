@@ -228,7 +228,7 @@ local function convert(mode)
     end
   end
   local colors_str = stringify(result)
-  local palette_str = stringify({ ui = colors.ui, syntax = colors.syntax })
+  local palette_str = stringify({ ui = colors.ui, syntax = colors.syntax, ansi = colors.ansi })
   local output = output_template:format(palette_str, colors_str):gsub('"', "'") -- single quote strings
   fn.writefile(vim.split(output, '\n'), ('./lua/horizon/palette-%s.lua'):format(mode))
 end

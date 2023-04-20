@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/akinsho/horizon.nvim/compare/v1.1.0...v1.2.0) (2023-04-20)
+
+
+### Features
+
+* **convert:** add ansi colours to palette ([e0b0d1c](https://github.com/akinsho/horizon.nvim/commit/e0b0d1c3a27be9f8492b091117e49f5defc10e0c))
+* **theme:** improve TS Rainbow colours ([cb3f546](https://github.com/akinsho/horizon.nvim/commit/cb3f5467e19652e00ed67471695d4566626cca61))
+
 ## [1.1.0](https://github.com/akinsho/horizon.nvim/compare/v1.0.0...v1.1.0) (2023-04-19)
 
 

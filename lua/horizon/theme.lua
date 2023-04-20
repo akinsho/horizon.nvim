@@ -141,7 +141,7 @@ local function get_highlights(data, custom)
     ['Conceal'] = { fg = custom.gray },
     ['Directory'] = { fg = t.keyword.fg, italic = true },
     ['SpecialKey'] = { fg = p.syntax.cranberry, bold = true },
-    ['ErrorMsg'] = { fg = p.ui.negative, bg = t.bg, bold = true },
+    ['ErrorMsg'] = { fg = p.ui.negative, bold = true },
     ['Search'] = { bg = custom.blue },
     ['IncSearch'] = { bg = custom.blue },
     ['Substitute'] = { bg = custom.blue },

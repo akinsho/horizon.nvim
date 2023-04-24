@@ -21,6 +21,7 @@ local theme_mappings = {
     ['foreground'] = 'fg',
     ['editor.background'] = 'bg',
     ['editor.lineHighlightBackground'] = 'cursorline_bg',
+    ['editorRuler.foreground'] = 'color_column_fg',
     ['editorWidget.background'] = { 'pmenu_bg', 'float_bg' },
     ['editorWidget.foreground'] = { 'pmenu_fg', 'float_fg' },
     ['editorWidget.border'] = 'float_border',

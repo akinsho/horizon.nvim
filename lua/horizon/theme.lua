@@ -123,7 +123,7 @@ local function get_highlights(data, custom)
     ['CursorLineSign'] = { link = 'CursorLine' },
     ['CursorLineFold'] = { link = 'CursorLine' },
     ['CurSearch'] = { bg = t.string.fg, fg = 'white', bold = true },
-    ['ColorColumn'] = { bg = p.ui.background },
+    ['ColorColumn'] = { fg = t.color_column_fg },
     ['Visual'] = { bg = t.visual },
     ['VisualNOS'] = { bg = p.ui.background },
     ['WarningMsg'] = { fg = custom.warn, bg = t.bg },

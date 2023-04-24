@@ -58,6 +58,7 @@ local theme = {
     fg = '#DB887A',
   },
   codelens_fg = '#44475D',
+  color_column_fg = '#343647',
   comment = {
     fg = '#4C4D53',
     italic = true,

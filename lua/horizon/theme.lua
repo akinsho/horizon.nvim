@@ -139,7 +139,7 @@ local function get_highlights(data, custom)
     ['TermCursor'] = { fg = t.term_cursor_fg, bg = t.term_cursor_bg },
     ['TermCursorNC'] = { fg = t.term_cursor_fg, bg = t.term_cursor_bg },
     ['Conceal'] = { fg = custom.gray },
-    ['Directory'] = { fg = t.keyword.fg, italic = true },
+    ['Directory'] = { fg = t.keyword.fg, bold = true },
     ['SpecialKey'] = { fg = p.syntax.cranberry, bold = true },
     ['ErrorMsg'] = { fg = p.ui.negative, bold = true },
     ['Search'] = { bg = custom.blue },

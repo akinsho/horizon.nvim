@@ -190,7 +190,7 @@ local function get_highlights(data, custom)
     ['Todo'] = { fg = p.ui.warning, bold = true },
     ['Error'] = { fg = p.ui.negative, bold = true },
     ['Statement'] = { fg = p.syntax.lavender },
-    ['Identifier'] = { fg = t.fg },
+    ['Identifier'] = t.variable,
     ['PreCondit'] = { fg = p.syntax.lavender },
     ['Special'] = { fg = p.syntax.apricot },
 

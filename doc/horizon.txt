@@ -1,4 +1,4 @@
-*horizon.txt*           For Neovim >= 0.8.0           Last change: 2023 May 05
+*horizon.txt*           For Neovim >= 0.8.0           Last change: 2023 May 23
 
 ==============================================================================
 Table of Contents                                  *horizon-table-of-contents*
@@ -111,7 +111,6 @@ options for this plugin.
 
 Currently supported plugins are:
 
-
 - cmp
 - indent-blankline
 - nvim-tree
@@ -171,7 +170,6 @@ to the `get_custom_highlights` function in `lua/horizon/theme.lua`.
 
 
 CREDIT & REFERENCES                 *horizon-horizon.nvim-credit-&-references*
-
 
 - horizon-theme <https://github.com/alexandernanberg/horizon-theme-vscode> - The Maintained fork
 - horizon-theme <https://github.com/jolaleye/horizon-theme-vscode> - The OG theme

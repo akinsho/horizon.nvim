@@ -173,7 +173,7 @@ local function get_highlights(data, custom)
     ['Exception'] = { fg = p.syntax.lavender },
     ['StorageClass'] = { fg = p.syntax.tacao },
     ['Structure'] = { fg = p.syntax.tacao },
-    ['Typedef'] = { fg = p.syntax.lavender },
+    ['Typedef'] = { link = 'Type' },
     ['Define'] = { fg = p.syntax.lavender },
     ['Macro'] = { fg = p.syntax.lavender },
     ['Debug'] = { fg = p.syntax.cranberry },

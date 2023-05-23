@@ -553,13 +553,13 @@ local function get_plugin_highlights(data, custom)
       ['NotifyTRACETitle'] = { fg = t.float_border },
     },
     ts_rainbow = {
-      ['TSRainbowRed'] = { fg = p.ansi.normal.red },
       ['TSRainbowGreen'] = { fg = p.ansi.normal.green },
-      ['TSRainbowCyan'] = { fg = p.ansi.normal.cyan },
-      ['TSRainbowOrange'] = { fg = p.syntax.apricot },
+      ['TSRainbowCyan'] = { fg = p.syntax.turquoise },
+      ['TSRainbowOrange'] = { fg = t.constant.fg },
+      ['TSRainbowRed'] = { fg = t.variable.fg },
+      ['TSRainbowYellow'] = { fg = t.type.fg }, --[['#FFD602']]
+      ['TSRainbowViolet'] = { fg = t.keyword.fg }, -- [['#DA70D6']]
       ['TSRainbowBlue'] = { fg = '#169FFF' },
-      ['TSRainbowYellow'] = { fg = '#FFD602' },
-      ['TSRainbowViolet'] = { fg = '#DA70D6' },
     },
     hop = {
       ['HopNextKey'] = { fg = '#4ae0ff' },

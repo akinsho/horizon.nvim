@@ -328,7 +328,7 @@ local function get_highlights(data, custom)
     ['LspReferenceText'] = { bg = p.ui.accent },
     ['LspReferenceWrite'] = { bg = p.ui.accent },
     ['LspCodeLens'] = { fg = t.codelens_fg, italic = true },
-    ['LspCodeLensSeparator'] = { fg = t.codelens_fg, italic = true },
+    ['LspCodeLensSeparator'] = { fg = t.codelens_fg, italic = false },
     ['LspInlayHint'] = { bg = t.cursorline_bg, fg = t.comment.fg },
 
     -- StatusLine

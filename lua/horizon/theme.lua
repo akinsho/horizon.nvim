@@ -569,6 +569,12 @@ local function get_plugin_highlights(data, custom)
       ['HopPreview'] = { fg = '#c7ba7d' },
       ['HopUnmatched'] = { fg = custom.gray },
     },
+    flash = {
+      ['FlashLabel'] = { fg = '#4ae0ff', bold = true, italic = true },
+      ['FlashCurrent'] = { fg = '#d44eed', underline = true },
+      ['FlashMatch'] = { fg = '#b42ecd' },
+      ['FlashBackdrop'] = { fg = custom.gray },
+    },
     crates = {
       ['CratesNvimLoading'] = { fg = p.ui.accentAlt },
       ['CratesNvimVersion'] = { fg = p.ui.accentAlt },

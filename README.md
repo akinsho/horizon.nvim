@@ -82,7 +82,8 @@ Custom highlights for plugin's can be enabled or disabled using the setup option
       crates = true,
       hop = true,
       navic = true,
-      quickscope = true
+      quickscope = true,
+      flash = true,
     }
   },
 }
@@ -90,20 +91,21 @@ Custom highlights for plugin's can be enabled or disabled using the setup option
 
 Currently supported plugins are:
 
-- cmp
-- indent-blankline
+- cmp.nvim
+- indent-blankline.nvim
 - nvim-tree
-- telescope
-- which-key
-- barbar
-- notify
-- symbols-outline
-- neo-tree
-- gitsigns
-- crates
-- hop
-- navic
-- quickscope
+- telescope.nvim
+- which-key.nvim
+- barbar.nvim
+- notify.nvim
+- symbols-outline.nvim
+- neo-tree.nvim
+- gitsigns.nvim
+- crates.nvim
+- hop.nvim
+- navic.nvim
+- quickscope.nvim
+- flash.nvim
 
 ## Contributing
 

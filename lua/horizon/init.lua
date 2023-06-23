@@ -22,6 +22,7 @@ defaults.plugins = {
   whichkey = true,
   cmp = true,
   ts_rainbow = true,
+  flash = true,
 }
 
 ---@param config horizon.Config?

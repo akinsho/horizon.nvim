@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.3.0](https://github.com/akinsho/horizon.nvim/compare/v1.2.0...v1.3.0) (2023-06-23)
+
+
+### Features
+
+* **lsp:** add inlay hint highlight ([0dcaf33](https://github.com/akinsho/horizon.nvim/commit/0dcaf337897441eb7a322e9b068b01abbed705fa))
+* **plugins:** add flash.nvim support ([a187357](https://github.com/akinsho/horizon.nvim/commit/a1873570f3ec75ca2ab45961429c62bc52102c8a))
+* **plugins:** darken nvim-notify border colours ([11518d0](https://github.com/akinsho/horizon.nvim/commit/11518d014ceca0e7d0ff24b0468d2c81c38542eb))
+* **theme:** add variable color for identifier ([65a9906](https://github.com/akinsho/horizon.nvim/commit/65a9906b823aca85fae9890d80574f95b28c0f87))
+* **theme:** map color column highlight ([a1151ff](https://github.com/akinsho/horizon.nvim/commit/a1151ff429b2a1c2bc5a7477f6eb4b689aef7494))
+
+
+### Bug Fixes
+
+* **lsp:** don't italicise codelens separators ([c2c44c8](https://github.com/akinsho/horizon.nvim/commit/c2c44c836694f3b3c777d38e97f4515c456e2ea8))
+
 ## [1.2.0](https://github.com/akinsho/horizon.nvim/compare/v1.1.0...v1.2.0) (2023-04-20)
 
 

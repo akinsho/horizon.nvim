@@ -553,6 +553,15 @@ local function get_plugin_highlights(data, custom)
       ['NotifyDEBUGTitle'] = { fg = custom.hint },
       ['NotifyTRACETitle'] = { fg = t.float_border },
     },
+    rainbow_delimiter = {
+      ['RainbowDelimiterGreen'] = { fg = p.ansi.normal.green },
+      ['RainbowDelimiterCyan'] = { fg = p.syntax.turquoise },
+      ['RainbowDelimiterOrange'] = { fg = t.constant.fg },
+      ['RainbowDelimiterRed'] = { fg = t.variable.fg },
+      ['RainbowDelimiterYellow'] = { fg = t.type.fg }, --[['#FFD602']]
+      ['RainbowDelimiterViolet'] = { fg = t.keyword.fg }, -- [['#DA70D6']]
+      ['RainbowDelimiterBlue'] = { fg = '#169FFF' },
+    },
     ts_rainbow = {
       ['TSRainbowGreen'] = { fg = p.ansi.normal.green },
       ['TSRainbowCyan'] = { fg = p.syntax.turquoise },

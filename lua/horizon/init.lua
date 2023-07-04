@@ -22,6 +22,7 @@ defaults.plugins = {
   whichkey = true,
   cmp = true,
   ts_rainbow = true,
+  rainbow_delimiter = true,
   flash = true,
 }
 

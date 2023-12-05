@@ -1,4 +1,4 @@
-*horizon.txt*           For Neovim >= 0.8.0          Last change: 2023 July 04
+*horizon.txt*         For Neovim >= 0.8.0        Last change: 2023 December 05
 
 ==============================================================================
 Table of Contents                                  *horizon-table-of-contents*
@@ -33,10 +33,10 @@ INSTALLATION                               *horizon-horizon.nvim-installation*
 
 >lua
     -- packer.nvim
-    use {"akinsho/horizon.nvim", tag = ""}
+    use {"akinsho/horizon.nvim", tag = "*"}
     
     -- lazy.nvim
-    { "akinsho/horizon.nvim", version = "" }
+    { "akinsho/horizon.nvim", version = "*" }
     
     vim.cmd.colorscheme('horizon')
     
@@ -55,7 +55,7 @@ autocommand.
     vim.api.nvim_create_autocommand('ColorScheme', {
       callback = function()
         -- see :h nvim_set_hl for more details
-        vim.api.nvim_set_hl('CursorLine', { bg = '1e1e1e', fg = 'ffffff', underline = true })
+        vim.api.nvim_set_hl('CursorLine', { bg = '#1e1e1e', fg = '#ffffff', underline = true })
       end
     })
 <
@@ -69,7 +69,7 @@ changes e.g.
       opts = {
         overrides = {
           colors = {
-            CursorLine = { bg = '1e1e1e', fg = 'ffffff', underline = true }
+            CursorLine = { bg = '#1e1e1e', fg = '#ffffff', underline = true }
           }
         }
       },
@@ -132,7 +132,7 @@ Currently supported plugins are:
 CONTRIBUTING                               *horizon-horizon.nvim-contributing*
 
 Because this plugin seeks to adhere to the source material closely, it pulls in
-the original themes json templates located in `build/{dark,light}/.json`.
+the original themes json templates located in `build/{dark,light}/*.json`.
 VSCode specifies colour values as 8 digit hex which is not supported by
 neovim/terminals as they do not support alpha (opacity) values. To get around
 this the json files are parsed and the alpha values are used as the basis for

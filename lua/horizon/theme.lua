@@ -152,6 +152,7 @@ local function get_highlights(data, custom)
     ['TabLine'] = { fg = p.ui.lightText, bg = p.ui.background },
     ['TabLineSel'] = { fg = t.fg, bg = p.ui.background },
     ['TabLineFill'] = { fg = p.ui.background, bg = p.ui.background },
+    ['Winbar'] = { bg = t.bg, fg = t.fg },
 
     -- Code
     ['Comment'] = t.comment,

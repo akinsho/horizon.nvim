@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/akinsho/horizon.nvim/compare/v1.3.0...v1.4.0) (2024-01-23)
+
+
+### Features
+
+* **plugins:** add rainbow delimiter ([217b4a1](https://github.com/akinsho/horizon.nvim/commit/217b4a1e3011860587fe2dc8b1efebe6413ebe59))
+
 ## [1.3.0](https://github.com/akinsho/horizon.nvim/compare/v1.2.0...v1.3.0) (2023-06-23)
 
 
